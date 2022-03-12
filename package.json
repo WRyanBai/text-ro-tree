@@ -1,0 +1,23 @@
+{
+  "name": "texttotree",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WRyanBai/textToTree.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WRyanBai/textToTree/issues"
+  },
+  "homepage": "https://github.com/WRyanBai/textToTree#readme",
+  "dependencies": {
+    "gh-pages": "^3.2.3"
+  }
+}
