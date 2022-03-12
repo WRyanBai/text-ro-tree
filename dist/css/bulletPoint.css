@@ -1,0 +1,73 @@
+#bulletPtContainer{
+	height: 90%;
+    width: 20%;
+	position: absolute;
+	top: 5%;
+	left: 75%;
+	box-sizing: border-box;
+	
+	border: 1px black solid;
+	padding: 10px;
+}
+
+#canvasContainer{
+	height: 90%;
+	width: 65%;
+	position: absolute;
+	top: 5%;
+	left: 5%;
+	box-sizing: border-box;
+	
+	overflow: scroll;
+	
+	border: 1px black solid;
+}
+
+#canvas{
+	height: 100%;
+	width: 100%;
+	position: relative;
+}
+
+.bulletPtSection{
+	margin-left: 20px;
+	background: #f4f4f4;
+}
+
+.bulletPtText{
+	
+}
+
+.graphNode{
+	height: 50px;
+	width: 100px;
+	background: #f4f4f4;
+	position: absolute;
+	z-index: 2;
+	
+	border: 1px black solid;
+	border-radius:10px;
+	padding: 10px;
+	box-sizing: border-box;
+	
+	display:grid;
+	justify-items:center;
+	align-items:center;
+}
+
+.graphText{
+	text-align:center;
+	width: 100%;
+	overflow:hidden;
+	word-wrap: break-word;
+	font-size:20px;
+	line-height: 1.25em;
+}
+
+.graphLine{
+	height: 2px;
+	background: black;
+	z-index: 1;
+	margin: 1px;
+	position: absolute;
+}
