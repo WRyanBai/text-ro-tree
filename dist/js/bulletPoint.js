@@ -308,6 +308,7 @@ const canvas = document.querySelector('#canvas');
 const bulletPtTree = new tree(new treeNode(bulletPtContainer.firstElementChild));
 const graphXMargin = 50;
 const graphYMargin = 25;
+console.log('hello');
 formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
 
 //Functions
