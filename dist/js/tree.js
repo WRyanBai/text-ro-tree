@@ -15,9 +15,11 @@ export class tree{
 		return this.currentNode;
 	}
 	
-	setCurrentNode(newCurrentNode){
+	setCurrentNode(newCurrentNode, focusText){
 		this.currentNode = newCurrentNode;
-		this.currentNode.getBulletPtText().focus();
+		if (focusText === undefined || focusText === true){
+			this.currentNode.getBulletPtText().focus();
+		}
 	}
 	
 	searchNode(bulletPtSection, searchCurrent){
@@ -49,5 +51,24 @@ export class tree{
 			let i = searchCurrent.getSiblingIndex();
 			return(this.searchNode(bulletPtSection, searchCurrent.getParent().getChildren()[i+1]));
 		}
+	}
+	
+	convertString(list, treeLayer){
+		if (list === undefined){
+			return("<!confirmation header!>"
+				+ this.convertString(this.rootNode.getChildren(), 1));
+		}
+		let treeString = "";
+		let i = 0;
+		for (i; i<list.length; i++){
+			treeString = treeString + "layer:" + treeLayer.toString() + ";";
+			treeString = treeString + "textLength:" + list[i].getBulletPtText().textContent.length + ";";
+			treeString = treeString + "text:" + list[i].getBulletPtText().textContent + ";";
+			treeString = treeString + "<node>";
+			if (list[i].getChildren().length != 0){
+				treeString = treeString + this.convertString(list[i].children,treeLayer+1);
+			}
+		}
+		return(treeString);
 	}
 }

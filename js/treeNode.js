@@ -9,11 +9,12 @@ export class treeNode{
 			this.bulletPtText = this.bulletPtSection.lastElementChild;
 			this.children = [];
 			this.graphNode = new graphNode(this);
+			this.margin = window.getComputedStyle(bulletPtSection).marginLeft;
+			this.graphLines = [];
+			
 			this.bulletPtSection.addEventListener('click', selectBulletPt);
 			this.bulletPtText.addEventListener('keydown', handleKeyPress);
 			this.bulletPtText.addEventListener('keyup', textChange);
-			this.margin = window.getComputedStyle(bulletPtSection).marginLeft;
-			this.graphLines = [];
 		}
 		else{
 			this.margin = '0px';
@@ -132,6 +133,7 @@ export class treeNode{
 	}
 	
 	setText(newText){
-		this.BulletPtText.textContent = newText;
+		this.bulletPtText.textContent = newText;
+		this.graphNode.setText(newText);
 	}
 }

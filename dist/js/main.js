@@ -7,9 +7,13 @@ import{tree} from './tree.js';
 //Elements
 const bulletPtContainer = document.querySelector('#bulletPtContainer');
 export const canvas = document.querySelector('#canvas');
-export const bulletPtTree = new tree(new treeNode(bulletPtContainer.firstElementChild));
+export let bulletPtTree = new tree(new treeNode(bulletPtContainer.firstElementChild));
 export const graphXMargin = 50;
 export const graphYMargin = 25;
+const loadButton = document.querySelector('#loadFiles');
+const saveButton = document.querySelector('#saveFiles');
+loadButton.addEventListener('click', loadFile);
+saveButton.addEventListener('click', saveFile);
 
 formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
 
@@ -159,4 +163,139 @@ export function formatGraph (nodeList,startX, startY, graphXMargin, graphYMargin
 	}
 	graphTotalHeight = startY - graphTotalHeight - graphYMargin;
 	return(graphTotalHeight);
+}
+
+/* async function loadFile(){
+	const selectedFile = loadButton.firstElementChild.files[0];
+	const fileText = await selectedFile.text();
+	console.log(fileText);
+} */
+
+async function loadFile(){
+	const [fileHandle] = await window.showOpenFilePicker();
+	const selectedFile = await fileHandle.getFile();
+	const fileText = await selectedFile.text();
+	treeFromString(fileText);
+}
+
+async function saveFile(){
+	/*This function is fired after the user clicks on the saveFiles button. It allows the user
+	to create a new file in their local storage to save the current tree diagram*/
+	
+	//The options variable spcifies that only '.txt' files will be accepted for saving to.
+	const options = {
+		types:[
+			{
+				description:'Text Files',
+				accept:{
+					'text/plain':['.txt']
+				},
+			},
+		],
+	};
+	//Prompts a file picker dialog box for users to create a file in their local storage to save to.
+	const saveFileHandle = await window.showSaveFilePicker();
+	//Create writable file stream to write to the file created by user.
+	const writable = await saveFileHandle.createWritable();
+	/*The contents of the file is a string representation of the tree diagram,
+	created using the convertString() method.*/
+	const fileContent = bulletPtTree.convertString();
+	//Write the content and close the writable file stream.
+	await writable.write(fileContent);
+	await writable.close();
+}
+
+function treeFromString(treeString){
+	//This function takes a string representation of a tree as input and creates a tree object from the string.
+	
+	//Check if string starts with the valid confirmation header.
+	if(treeString.substring(0, 23) === "<!confirmation header!>"){
+		//Remove all current elements in the inner HTML of the canvas and bulletPtContainer.
+		//They will be overwritten when a new tree is loaded.
+		canvas.innerHTML = "";
+		bulletPtContainer.innerHTML = "";
+		
+		//Get substring after header.
+		treeString = treeString.substring(23);
+		
+		let i = 0;
+		let currentLayer = 0;
+		
+		while(treeString.length != 0){
+			//Get the substring after 'layer:'
+			treeString = treeString.substring(6);
+			//Use a for loop to find the index of next semicolon
+			for (i=0; i<treeString.length;i++){
+				if(treeString.charAt(i) === ';'){
+					break;
+				}
+			}
+			//The value of treeLayer is the substring up until the semicolon
+			let treeLayer = parseInt(treeString.substring(0, i));
+			//Get the substring after the semicolon and 'textLength:'
+			treeString = treeString.substring(i+12);
+			//Find the index of next semicolon
+			for (i=0; i<treeString.length;i++){
+				if(treeString.charAt(i) === ';'){
+					break;
+				}
+			}
+			//The value of textLength is the substring up until the semicolon
+			let textLength = parseInt(treeString.substring(0, i));
+			//Get the substring after the semicolon and 'text:'
+			treeString = treeString.substring(i+6);
+			//Get nodeText using the textLength;
+			let nodeText = treeString.substring(0, textLength);
+			//Get substring after text and ';<node>'
+			treeString = treeString.substring(textLength + 7);
+			
+			//Create new treeNode based on information read from string.
+			//Create the a bulletPtSection and BulletPtText.
+			let newBulletPtSection = document.createElement('li');
+			newBulletPtSection.classList.add('bulletPtSection');
+			let newBulletPtText = document.createElement('div');
+			newBulletPtText.classList.add('bulletPtText');
+			newBulletPtText.contentEditable = "true";
+			newBulletPtSection.appendChild(newBulletPtText);
+			bulletPtContainer.appendChild(newBulletPtSection);
+			//Create a new node.
+			let newNode = new treeNode(newBulletPtSection);
+			//set the text of the newNode.
+			newNode.setText(nodeText);
+			if(textLength === 0){
+				console.log(newNode)
+				console.log(newNode.getBulletPtText());
+			}
+			
+			if(currentLayer === 0){
+				//If currentLayer is 0, thenew node corresponds to the first node of the tree.
+				//Create a new tree with the first node set to the newly created node.
+				bulletPtTree = new tree(newNode);
+				currentLayer = treeLayer;
+			}else if(treeLayer > currentLayer){
+				if(treeLayer === currentLayer + 1){
+					bulletPtTree.getCurrentNode().appendChildNode(newNode);
+					bulletPtTree.setCurrentNode(newNode, false);
+					currentLayer = treeLayer;
+				}else{
+					//throw error
+				}
+			}else if(treeLayer === currentLayer){
+				bulletPtTree.getCurrentNode().getParent().appendChildNode(newNode);
+				bulletPtTree.setCurrentNode(newNode, false);
+				currentLayer = treeLayer;
+			}else if(treeLayer < currentLayer){
+				for(let j = 0; j < currentLayer - treeLayer + 1; j++){
+					bulletPtTree.setCurrentNode(bulletPtTree.getCurrentNode().getParent(), false);
+				}
+				bulletPtTree.getCurrentNode().appendChildNode(newNode);
+				
+				bulletPtTree.setCurrentNode(newNode, false);
+				currentLayer = treeLayer;
+			}
+		}
+		formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
+	}else{
+		console.log('error');
+	}
 }
