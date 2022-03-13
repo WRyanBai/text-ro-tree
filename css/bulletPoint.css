@@ -55,8 +55,13 @@ body{
 .button{
 	height:50px;
 	width:50px;
-	background:white;
+	background:#f4f4f4;
+	border:1px black solid;
 	position: absolute;
+}
+
+.button:hover{
+	background:#9f9f9f;
 }
 
 .bulletPtSection{
