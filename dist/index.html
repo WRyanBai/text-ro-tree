@@ -5,12 +5,33 @@
 		<link rel="stylesheet" type="text/css" href="css/bulletPoint.css">
 	</head>
 	<body>
-		<div id = "buttonsPanel">
-			<div id = "loadFiles" class = "button">
-				open file
+		<div id = "optionsPanel">
+			<div id = "fileOptions">
+				<div id = "loadFiles" class = "button">
+					open file
+				</div>
+				<div id = "saveFiles" class = "button">
+					save file
+				</div>
 			</div>
-			<div id = "saveFiles" class = "button">
-				save file
+			<div id='fontSizeInput' class='inputContainer'>
+				<p>Font size</p>
+				<input type='number' min=5 max=70></input>
+			</div>
+			<div id='nodeWidthInput' class='inputContainer'>
+				<p>Node width</p>
+				<input type='number' min=70 max=1000></input>
+			</div>
+			<div id="textOptions">
+				<div id = "italicsButton" class = "button">
+					italicize
+				</div>
+				<div id = "boldButton" class = "button">
+					bold
+				</div>
+				<div id = "underlineButton" class = "button">
+					Underline
+				</div>
 			</div>
 		</div>
 		<div id = "canvasContainer">

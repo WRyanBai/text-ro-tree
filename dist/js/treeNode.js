@@ -136,4 +136,18 @@ export class treeNode{
 		this.bulletPtText.textContent = newText;
 		this.graphNode.setText(newText);
 	}
+	
+	getTextProperty(propertyName){
+		const style = window.getComputedStyle(this.bulletPtText);
+		return(style[propertyName]);
+	}
+	
+	setTextProperty(propertyName, propertyValue){
+		this.bulletPtText.style[propertyName] = propertyValue;
+		this.graphNode.setTextProperty(propertyName, propertyValue);
+	}
+	
+	setFontSize(newFontSize){
+		this.graphNode.setFontSize(newFontSize);
+	}
 }

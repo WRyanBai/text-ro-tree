@@ -50,6 +50,14 @@ export class graphNode{
 	setGraphWidth(graphWidth){
 		this.graphWidth = graphWidth;
 		this.graphElement.style.width = graphWidth.toString() + 'px';
+		
+		let newHeight = window.getComputedStyle(this.graphText).height;
+		newHeight = parseInt(newHeight.substring(0, newHeight.length - 2));
+		newHeight += 2 * this.padding;
+		if (newHeight != this.graphHeight){
+			this.setGraphHeight(newHeight);
+		}
+		formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
 	}
 	
 	getGraphHeight(){
@@ -74,6 +82,26 @@ export class graphNode{
 			if(newHeight === 2 * this.padding){
 				newHeight += this.lineHeight;
 			}
+			this.setGraphHeight(newHeight);
+			formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
+		}
+	}
+	
+	getTextProperty(propertyName){
+		const style = window.getComputedStyle(this.graphText);
+		return(style[propertyName]);
+	}
+	
+	setTextProperty(propertyName, propertyValue){
+		this.graphText.style[propertyName] = propertyValue;
+	}
+	
+	setFontSize(newFontSize){
+		this.setTextProperty('fontSize',newFontSize);
+		let newHeight = window.getComputedStyle(this.graphText).height;
+		newHeight = parseInt(newHeight.substring(0, newHeight.length - 2));
+		newHeight += 2 * this.padding;
+		if (newHeight != this.graphHeight){
 			this.setGraphHeight(newHeight);
 			formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
 		}
