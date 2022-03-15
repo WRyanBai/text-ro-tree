@@ -1,6 +1,9 @@
-import {canvas} from './main.js';
+/*This module contains the graphLine class, which is a wrapper class for the lines connecting
+nodes in the tree diagram.*/
 
-export class graphLine{
+import {bulletPtTree, canvas} from './main.js';
+
+class graphLine{
 	constructor(parentNode, childNode){
 		this.parentNode = parentNode;
 		this.childNode = childNode;
@@ -35,3 +38,5 @@ export class graphLine{
 		this.lineElement.remove();
 	}
 }
+
+export {graphLine};

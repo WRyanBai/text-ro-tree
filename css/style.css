@@ -39,6 +39,8 @@ body{
 	left: 75%;
 	box-sizing: border-box;
 	
+	overflow:scroll;
+	
 	border: 1px black solid;
 	padding: 10px;
 	margin:0;

@@ -1,8 +1,16 @@
+/*This module contains the treeNode class. Each treeNode object corresponds to
+a bullet point and a graphNode. The treeNode class allows for easy manipulation of
+bullet points and corresponding graphNodes*/
+
+//Import classes
 import {graphNode} from './graphNode.js';
 import{graphLine} from './graphLine.js';
-import {selectBulletPt, handleKeyPress, textChange} from './main.js';
+/*Import functions related to bullet points. Listeners for events on html elements
+of bullet points will need to access these functions.*/
+import {selectBulletPt, handleKeyPress, textChange} from './functionsBulletPt.js';
+import{removePx} from './functionUtils.js';
 
-export class treeNode{
+class treeNode{
 	constructor(bulletPtSection){
 		if (bulletPtSection != undefined){
 			this.bulletPtSection = bulletPtSection;
@@ -41,6 +49,10 @@ export class treeNode{
 	
 	getBulletPtText(){
 		return(this.bulletPtText);
+	}
+	
+	getChildren(){
+		return(this.children);
 	}
 	
 	appendChildNode(childNode, i){
@@ -89,10 +101,6 @@ export class treeNode{
 		}
 	}
 	
-	getChildren(){
-		return(this.children);
-	}
-	
 	getSiblingIndex(){
 		//Find the index of this node in its parent's children array
 		let i = 0;
@@ -116,7 +124,7 @@ export class treeNode{
 	
 	addMargin(){
 		//adds 20 pixels to the left margin of the bulletPtSection html element
-		this.margin = (parseInt(this.margin.substring(0,this.margin.length - 2))+ 20).toString() + 'px';
+		this.margin = (removePx(this.margin) + 20).toString() + 'px';
 		this.bulletPtSection.style.marginLeft = this.margin;
 	}
 	
@@ -151,3 +159,5 @@ export class treeNode{
 		this.graphNode.setFontSize(newFontSize);
 	}
 }
+
+export {treeNode}

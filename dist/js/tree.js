@@ -1,6 +1,10 @@
-import {treeNode} from './treeNode.js';
+/*This module contains the tree class, which is constructed from treeNode objects.
+The tree class represents the parent-child relationship between nodes in the tree diagram.*/
 
-export class tree{
+import {treeNode} from './treeNode.js';
+import{removePx} from './functionUtils.js';
+
+class tree{
 	constructor(firstNode){
 		this.rootNode = new treeNode();
 		this.currentNode = firstNode;
@@ -61,10 +65,21 @@ export class tree{
 		let treeString = "";
 		let i = 0;
 		for (i; i<list.length; i++){
+			
 			treeString = treeString + "layer:" + treeLayer.toString() + ";";
-			treeString = treeString + "textLength:" + list[i].getBulletPtText().textContent.length + ";";
-			treeString = treeString + "text:" + list[i].getBulletPtText().textContent + ";";
+			treeString = treeString + "textLength:" + list[i].getText().length + ";";
+			treeString = treeString + "text:" + list[i].getText() + ";";
+			treeString = treeString + "width:" + list[i].getGraphNode().getGraphWidth() + ";";
+			treeString = treeString + "fontSize:" +
+				removePx(list[i].getGraphNode().getTextProperty('fontSize')) + ";";
+			treeString = treeString + "fontStyle:" +
+				list[i].getGraphNode().getTextProperty('fontStyle') + ";";
+			treeString = treeString + "fontWeight:" +
+				list[i].getGraphNode().getTextProperty('fontWeight') + ";";
+			treeString = treeString + "textDecoration:" +
+				list[i].getGraphNode().getTextProperty('textDecoration') + ";";
 			treeString = treeString + "<node>";
+			
 			if (list[i].getChildren().length != 0){
 				treeString = treeString + this.convertString(list[i].children,treeLayer+1);
 			}
@@ -72,3 +87,5 @@ export class tree{
 		return(treeString);
 	}
 }
+
+export {tree};
