@@ -2,26 +2,57 @@
 and editing the text of bullet points.*/
 
 //import classes
-import{treeNode} from './treeNode.js';
+import{TreeNode} from './TreeNode.js';
 //import the bulletPtTree
-import {bulletPtTree, graphXMargin, graphYMargin} from './main.js';
+import {bulletPtTree, graphXMargin, graphYMargin, fontSizeInput, nodeWidthInput, body} from './main.js';
 /*import function for formatting the graph, since editing the text content of a bulletPoint
 causes the graph to change as well.*/
 import {formatGraph} from './functionsGraph.js';
 import{removePx} from './functionUtils.js';
 
-function selectBulletPt(e){
-	let target = e.target;
-	while(! target.classList.contains('bulletPtSection')){
-		target = target.parentNode;
+function findNodeObject (targetElement){
+	/*This function is used in selectBulletPt and deselectBulletPt functions. When a bulletPtSection
+	or graphNode element is clicked, the target of the click event may be one of their child elements.
+	This function searches the parents of the target to determine if a bulletPtSection or graphNode
+	has been clicked.*/
+	
+	let isNode = true;
+	while(true){
+		if(targetElement.classList.contains('bulletPtSection') ||
+			targetElement.classList.contains('graphNode')){
+			/*If the targetElement is a bulletPtSection or graphNode, the loop will be exited
+			with isNode set to true.*/
+			break;
+		}
+		//Search the next parent of targetElement.
+		targetElement = targetElement.parentNode;
 	}
-	bulletPtTree.setCurrentNode(bulletPtTree.searchNode(target));
+	return(targetElement)
+}
+
+function selectNode(e){
+	let target = findNodeObject(e.target);
+	
+	//Find the treeNode object in the bulletPtTree that corresponds to the target element, and set it
+	//as the current Node.
+	let selectedNode = bulletPtTree.searchNode(target);
+	selectedNode.highlight();
+	bulletPtTree.setCurrentNode(selectedNode);
 	
 	let fontSize = bulletPtTree.getCurrentNode().getTextProperty('fontSize');
 	fontSize = removePx(fontSize);
 	fontSizeInput.value = fontSize;
 	let nodeWidth = bulletPtTree.getCurrentNode().getGraphNode().getGraphWidth();
 	nodeWidthInput.value = nodeWidth;
+}
+
+function unselectNode(e){
+	let target = findNodeObject(e.target);
+	
+	let selectedNode = bulletPtTree.searchNode(target);
+	selectedNode.unhighlight();
+	fontSizeInput.value = '';
+	nodeWidthInput.value = '';
 }
 
 function handleKeyPress (e){
@@ -65,10 +96,11 @@ function createNewBulletPt(){
 	//Find the next html element in the dom tree after the current bulletPtSection
 	bulletPtContainer.insertBefore(newBulletPtSection,
 		bulletPtTree.getCurrentNode().getBulletPtSection().nextSibling);
-	let newNode = new treeNode(newBulletPtSection);
+	let newNode = new TreeNode(newBulletPtSection);
 	let i = bulletPtTree.getCurrentNode().getSiblingIndex();
 	bulletPtTree.getCurrentNode().getParent().appendChildNode(newNode, i+1);
 	bulletPtTree.setCurrentNode(newNode);
+	bulletPtTree.getCurrentNode().highlight();
 	
 	formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
 	
@@ -125,4 +157,4 @@ function removeHtml(targetNode){
 	targetNode.getGraphNode().getGraphElement().remove();
 }
 
-export{selectBulletPt, handleKeyPress, textChange};
+export{selectNode, unselectNode, handleKeyPress, textChange};

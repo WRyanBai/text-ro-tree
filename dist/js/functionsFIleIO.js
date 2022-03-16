@@ -4,10 +4,10 @@ and stored in a .txt file. When a .txt file containing a valid string representa
 a tree will be constructed from the string */
 
 //import classes
-import{treeNode} from './treeNode.js';
-import{tree} from './tree.js';
+import{TreeNode} from './TreeNode.js';
+import{Tree} from './Tree.js';
 //import function
-import{formatGraph} from './functionsGraph.js';
+import{formatGraph, enlargeGraph, exitEnlargeGraph} from './functionsGraph.js';
 //import the bulletPtTree
 import {bulletPtTree, graphXMargin, graphYMargin, setTree} from './main.js';
 
@@ -154,7 +154,7 @@ function treeFromString(treeString){
 		newBulletPtSection.appendChild(newBulletPtText);
 		bulletPtContainer.appendChild(newBulletPtSection);
 		//Create a new node.
-		let newNode = new treeNode(newBulletPtSection);
+		let newNode = new TreeNode(newBulletPtSection);
 		//set the text of the newNode.
 		newNode.setText(nodeText);
 		newNode.getGraphNode().setGraphWidth(width);
@@ -166,7 +166,7 @@ function treeFromString(treeString){
 		if(currentLayer === 0){
 			//If currentLayer is 0, thenew node corresponds to the first node of the tree.
 			//Create a new tree with the first node set to the newly created node.
-			newTree = new tree(newNode);
+			newTree = new Tree(newNode);
 			currentLayer = treeLayer;
 		}else if(treeLayer > currentLayer){
 			/*In correct files, if a node's treelayer is larger than the preceeding node, it
@@ -233,4 +233,10 @@ function readProperty(propertyName, propertyType, treeString, textLength){
 	}
 }
 
-export{loadFile, saveFile}
+function printGraph(){
+	enlargeGraph();
+	window.print();
+	exitEnlargeGraph();
+}
+
+export{loadFile, saveFile, printGraph}

@@ -3,24 +3,28 @@ a bullet point and a graphNode. The treeNode class allows for easy manipulation 
 bullet points and corresponding graphNodes*/
 
 //Import classes
-import {graphNode} from './graphNode.js';
-import{graphLine} from './graphLine.js';
+import{SelectableNode} from './SelectableNode.js';
+import {GraphNode} from './graphNode.js';
+import{GraphLine} from './graphLine.js';
 /*Import functions related to bullet points. Listeners for events on html elements
 of bullet points will need to access these functions.*/
-import {selectBulletPt, handleKeyPress, textChange} from './functionsBulletPt.js';
+import {handleKeyPress, textChange} from './functionsBulletPt.js';
 import{removePx} from './functionUtils.js';
 
-class treeNode{
+class TreeNode extends SelectableNode{
 	constructor(bulletPtSection){
+		super()
 		if (bulletPtSection != undefined){
 			this.bulletPtSection = bulletPtSection;
 			this.bulletPtText = this.bulletPtSection.lastElementChild;
 			this.children = [];
-			this.graphNode = new graphNode(this);
+			this.graphNode = new GraphNode(this);
 			this.margin = window.getComputedStyle(bulletPtSection).marginLeft;
 			this.graphLines = [];
 			
-			this.bulletPtSection.addEventListener('click', selectBulletPt);
+			super.setNodeElement(this.bulletPtSection);
+			super.setTextElement(this.bulletPtText);
+			
 			this.bulletPtText.addEventListener('keydown', handleKeyPress);
 			this.bulletPtText.addEventListener('keyup', textChange);
 		}
@@ -62,13 +66,13 @@ class treeNode{
 		if (i === undefined){
 			this.children.push(childNode);
 			if(this.graphLines != undefined){
-				this.graphLines.push(new graphLine(this, childNode));
+				this.graphLines.push(new GraphLine(this, childNode));
 			}
 		}else{
 			//If the parameter 'i' is inputted, the node will be appended at the index i
 			this.children.splice(i, 0, childNode)
 			if(this.graphLines != undefined){
-				this.graphLines.splice(i, 0, new graphLine(this, childNode));
+				this.graphLines.splice(i, 0, new GraphLine(this, childNode));
 			}
 		}
 	}
@@ -136,28 +140,32 @@ class treeNode{
 		return(this.graphLines);
 	}
 	
-	getText(){
-		return(this.bulletPtText.textContent);
-	}
-	
 	setText(newText){
-		this.bulletPtText.textContent = newText;
+		super.setText(newText);
 		this.graphNode.setText(newText);
 	}
 	
-	getTextProperty(propertyName){
-		const style = window.getComputedStyle(this.bulletPtText);
-		return(style[propertyName]);
-	}
-	
 	setTextProperty(propertyName, propertyValue){
-		this.bulletPtText.style[propertyName] = propertyValue;
+		super.setTextProperty(propertyName, propertyValue);
 		this.graphNode.setTextProperty(propertyName, propertyValue);
 	}
 	
 	setFontSize(newFontSize){
+		super.setTextProperty('fontSize',newFontSize);
 		this.graphNode.setFontSize(newFontSize);
+	}
+	
+	highlight(){
+		super.highlight();
+		this.graphNode.highlight();
+		this.bulletPtText.focus();
+	}
+	
+	unhighlight(){
+		super.unhighlight();
+		this.graphNode.unhighlight();
+		this.bulletPtText.blur();
 	}
 }
 
-export {treeNode}
+export {TreeNode}

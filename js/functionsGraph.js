@@ -1,5 +1,7 @@
 //This module contains functions related to formatting the graph.
 
+import {body, canvasContainer, bulletPtTree} from './main.js';
+
 function formatGraph (nodeList,startX, startY, graphXMargin, graphYMargin){
 	startX += graphXMargin;
 	let graphTotalHeight = startY
@@ -35,4 +37,34 @@ function formatGraph (nodeList,startX, startY, graphXMargin, graphYMargin){
 	return(graphTotalHeight);
 }
 
-export{formatGraph}
+function enlargeGraph(){
+	canvasContainer.style.top = '0px';
+	canvasContainer.style.left = '0px';
+	
+	let viewPortHeight = window.innerHeight;
+	let viewPortWidth = window.innerWidth;
+	canvasContainer.style.height = viewPortHeight;
+	canvasContainer.style.width = viewPortWidth;
+	canvasContainer.style.overflow = 'hidden';
+	canvasContainer.style.border = 'none';
+	body.style.height = viewPortHeight;
+	body.style.width = viewPortWidth;
+	if(bulletPtTree.getCurrentNode() != null){
+		bulletPtTree.getCurrentNode().unhighlight();
+	}
+	
+	body.addEventListener('mousedown', exitEnlargeGraph);
+}
+
+function exitEnlargeGraph(){
+	canvasContainer.style.top = '17%';
+	canvasContainer.style.left = '5%';
+	canvasContainer.style.height = '78%';
+	canvasContainer.style.width = '65%';
+	canvasContainer.style.overflow = 'scroll';
+	canvasContainer.style.border = '1px solid black';
+	body.style.height = '100%';
+	body.style.width = '100%';
+}
+
+export{formatGraph, enlargeGraph, exitEnlargeGraph}

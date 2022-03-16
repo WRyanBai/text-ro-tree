@@ -3,7 +3,7 @@ nodes in the tree diagram.*/
 
 import {bulletPtTree, canvas} from './main.js';
 
-class graphLine{
+class GraphLine{
 	constructor(parentNode, childNode){
 		this.parentNode = parentNode;
 		this.childNode = childNode;
@@ -39,4 +39,4 @@ class graphLine{
 	}
 }
 
-export {graphLine};
+export {GraphLine};

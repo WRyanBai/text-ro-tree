@@ -3,30 +3,30 @@ This module imports functions and classes from other modules, initializes the tr
 and creates listeners for events related to elements on the page.*/
 
 //imported classes
-import{treeNode} from './treeNode.js';
-import{tree} from './tree.js';
+import{TreeNode} from './TreeNode.js';
+import{Tree} from './Tree.js';
 //imported functions
-import{loadFile, saveFile} from './functionsFileIO.js';
-import{formatGraph} from './functionsGraph.js';
+import{loadFile, saveFile, printGraph} from './functionsFileIO.js';
+import{formatGraph, enlargeGraph} from './functionsGraph.js';
 import{italicizeText, boldText, underlineText, changeFontSize, changeNodeWidth} from './functionsTextOptions.js';
 
 //Constant values;
 const graphXMargin = 50;
 const graphYMargin = 25;
+
+const body = document.querySelector('body');
 //Bullet point and graph elements
 const bulletPtContainer = document.querySelector('#bulletPtContainer');
+const canvasContainer = document.querySelector('#canvasContainer');
 const canvas = document.querySelector('#canvas');
 //Create tree.
-let bulletPtTree = new tree(new treeNode(bulletPtContainer.firstElementChild));
+let bulletPtTree = new Tree(new TreeNode(bulletPtContainer.firstElementChild));
 
 /*function for changing the tree. This function is necessary because the fileIO module needs
 to change the bulletPtTree.*/
 function setTree (newTree){
 	bulletPtTree = newTree;
 }
-
-//Export constants, elements, and bulletPtTree, which are required in other modules.
-export{graphXMargin, graphYMargin, bulletPtContainer, canvas, bulletPtTree, setTree};
 
 //format graph accrding to the intial tree.
 formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
@@ -36,6 +36,10 @@ const loadButton = document.querySelector('#loadFiles');
 loadButton.addEventListener('click', loadFile);
 const saveButton = document.querySelector('#saveFiles');
 saveButton.addEventListener('click', saveFile);
+const printButton = document.querySelector('#printGraph');
+printButton.addEventListener('click', printGraph);
+const enlargeButton = document.querySelector('#enlargeGraph');
+enlargeButton.addEventListener('click', enlargeGraph);
 
 const italicsButton = document.querySelector('#italicsButton');
 italicsButton.addEventListener('click', italicizeText);
@@ -48,3 +52,6 @@ const fontSizeInput = document.querySelector('#fontSizeInput').lastElementChild;
 fontSizeInput.addEventListener('change', changeFontSize);
 const nodeWidthInput = document.querySelector('#nodeWidthInput').lastElementChild;
 nodeWidthInput.addEventListener('change', changeNodeWidth);
+
+export{graphXMargin, graphYMargin, bulletPtContainer, canvas,
+body, canvasContainer, bulletPtTree, setTree, fontSizeInput, nodeWidthInput};

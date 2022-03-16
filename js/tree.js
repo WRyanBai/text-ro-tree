@@ -1,12 +1,12 @@
 /*This module contains the tree class, which is constructed from treeNode objects.
 The tree class represents the parent-child relationship between nodes in the tree diagram.*/
 
-import {treeNode} from './treeNode.js';
+import {TreeNode} from './TreeNode.js';
 import{removePx} from './functionUtils.js';
 
-class tree{
+class Tree{
 	constructor(firstNode){
-		this.rootNode = new treeNode();
+		this.rootNode = new TreeNode();
 		this.currentNode = firstNode;
 		this.rootNode.appendChildNode(firstNode);
 	}
@@ -19,25 +19,26 @@ class tree{
 		return this.currentNode;
 	}
 	
-	setCurrentNode(newCurrentNode, focusText){
-		this.currentNode = newCurrentNode;
-		if (focusText === undefined || focusText === true){
-			this.currentNode.getBulletPtText().focus();
+	setCurrentNode(newCurrentNode, changeStyle){
+		if(newCurrentNode != this.currentNode){
+			this.currentNode.unhighlight();
+			this.currentNode = newCurrentNode;
 		}
 	}
 	
-	searchNode(bulletPtSection, searchCurrent){
+	searchNode(searchElement, searchCurrent){
 		if (searchCurrent === undefined){
 			searchCurrent = this.rootNode.getChildren()[0];
 		}
 		
 		// If the current Node is the selectedNode, return current Node
-		if(searchCurrent.getBulletPtSection() === bulletPtSection){
+		if(searchCurrent.getBulletPtSection() === searchElement ||
+			searchCurrent.getGraphNode().getGraphElement() === searchElement){
 			return(searchCurrent);
 		}
 		// else, if current node has children, search its children
 		else if(searchCurrent.getChildren().length != 0){
-			let searchResult = this.searchNode(bulletPtSection, searchCurrent.getChildren()[0])
+			let searchResult = this.searchNode(searchElement, searchCurrent.getChildren()[0])
 			//If the selectedNode is found in the children, return results from children
 			if(searchResult != null){
 				return(searchResult);
@@ -53,7 +54,7 @@ class tree{
 		// otherwise, search next sibling.
 		else{
 			let i = searchCurrent.getSiblingIndex();
-			return(this.searchNode(bulletPtSection, searchCurrent.getParent().getChildren()[i+1]));
+			return(this.searchNode(searchElement, searchCurrent.getParent().getChildren()[i+1]));
 		}
 	}
 	
@@ -88,4 +89,4 @@ class tree{
 	}
 }
 
-export {tree};
+export {Tree};

@@ -1,16 +1,19 @@
 /*This module contains the graphNode class, which represents the elements that form
 the nodes of the tree diagram.*/
 
-//import{treeNode} from './treeNode.js';
+import{SelectableNode} from './SelectableNode.js';
 
 /*After properties or content of a graphNode is edited the graph needs to be formatted again.
 Variables and functions related to formatting the graph is imported.*/
 import{formatGraph} from './functionsGraph.js';
 import {bulletPtTree, canvas, graphXMargin, graphYMargin} from './main.js';
+import {selectNode} from './functionsBulletPt.js';
 import{removePx} from './functionUtils.js';
 
-class graphNode{
+class GraphNode extends SelectableNode {
 	constructor(treeNode){
+		super();
+		
 		this.graphElement = document.createElement('div');
 		this.graphElement.classList.add('graphNode');
 		canvas.appendChild(this.graphElement);
@@ -20,6 +23,8 @@ class graphNode{
 		this.xCoord = 0;
 		this.yCoord = 0;
 		
+		super.setNodeElement(this.graphElement);
+		super.setTextElement(this.graphText);
 		let graphElementStyles = window.getComputedStyle(this.graphElement);
 		
 		this.graphWidth = removePx(graphElementStyles.width);
@@ -86,17 +91,8 @@ class graphNode{
 	}
 	
 	setText(newText){
-		this.graphText.textContent = newText;
+		super.setText(newText);
 		this.updateHeight(true);
-	}
-	
-	getTextProperty(propertyName){
-		const style = window.getComputedStyle(this.graphText);
-		return(style[propertyName]);
-	}
-	
-	setTextProperty(propertyName, propertyValue){
-		this.graphText.style[propertyName] = propertyValue;
 	}
 	
 	setFontSize(newFontSize){
@@ -105,4 +101,4 @@ class graphNode{
 	}
 }
 
-export {graphNode};
+export {GraphNode};
