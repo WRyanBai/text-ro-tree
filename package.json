@@ -2,7 +2,7 @@
   "name": "texttotree",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "deploy": "gh-pages -d dist"
   },
@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/WRyanBai/textToTree/issues"
   },
-  "homepage": "https://github.com/WRyanBai/textToTree",
+  "homepage": "https://github.com/WRyanBai/textToTree/index.html",
   "dependencies": {
     "gh-pages": "^3.2.3"
   }
