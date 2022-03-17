@@ -11,6 +11,8 @@ of bullet points will need to access these functions.*/
 import {handleKeyPress, textChange} from './functionsBulletPt.js';
 import{removePx} from './functionUtils.js';
 
+import {fontSizeInput, nodeWidthInput} from './main.js';
+
 class TreeNode extends SelectableNode{
 	constructor(bulletPtSection){
 		super()

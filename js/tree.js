@@ -19,11 +19,8 @@ class Tree{
 		return this.currentNode;
 	}
 	
-	setCurrentNode(newCurrentNode, changeStyle){
-		if(newCurrentNode != this.currentNode){
-			this.currentNode.unhighlight();
-			this.currentNode = newCurrentNode;
-		}
+	setCurrentNode(newCurrentNode){
+		this.currentNode = newCurrentNode;
 	}
 	
 	searchNode(searchElement, searchCurrent){
@@ -66,7 +63,6 @@ class Tree{
 		let treeString = "";
 		let i = 0;
 		for (i; i<list.length; i++){
-			
 			treeString = treeString + "layer:" + treeLayer.toString() + ";";
 			treeString = treeString + "textLength:" + list[i].getText().length + ";";
 			treeString = treeString + "text:" + list[i].getText() + ";";
@@ -79,6 +75,8 @@ class Tree{
 				list[i].getGraphNode().getTextProperty('fontWeight') + ";";
 			treeString = treeString + "textDecoration:" +
 				list[i].getGraphNode().getTextProperty('textDecoration') + ";";
+			treeString = treeString + 'textColor:' + list[i].getTextProperty('color') + ';';
+			treeString = treeString + 'nodeColor:' + list[i].getGraphNode().getGraphColor() + ';';
 			treeString = treeString + "<node>";
 			
 			if (list[i].getChildren().length != 0){

@@ -161,17 +161,12 @@ class TreeNode extends SelectableNode{
 		super.highlight();
 		this.graphNode.highlight();
 		this.bulletPtText.focus();
-		
-		fontSizeInput.value = removePx(this.getTextProperty('fontSize'));
-		nodeWidthInput.value = this.getGraphNode().getGraphWidth();
 	}
 	
 	unhighlight(){
 		super.unhighlight();
 		this.graphNode.unhighlight();
 		this.bulletPtText.blur();
-		fontSizeInput.value = '';
-		nodeWidthInput.value = '';
 	}
 }
 

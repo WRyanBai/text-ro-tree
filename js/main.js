@@ -56,7 +56,6 @@ nodeWidthInput.addEventListener('change', changeNodeWidth);
 
 //Elements and event listeners related to the color panel.
 const colorAdjustPanel = document.querySelector('#colorAdjustPanel');
-const textColorButton = document.querySelector('#textColorButton');
 const redSlider = document.querySelector('#redSlider');
 const greenSlider = document.querySelector('#greenSlider');
 const blueSlider = document.querySelector('#blueSlider');
@@ -65,7 +64,10 @@ const colorCodeInput = document.querySelector('#colorCodeInput');
 const colorButton = document.querySelector('#colorButton');
 
 const colorObject = initializeColor();
-textColorButton.addEventListener('click', (e) => {changeColor('text', colorObject)});
+const textColorButton = document.querySelector('#textColorButton');
+textColorButton.addEventListener('click', (e) => {changeColor('text')});
+const nodeColorButton = document.querySelector('#nodeColorButton');
+nodeColorButton.addEventListener('click', (e) => {changeColor('node')});
 
 export{//constants
 	graphXMargin, graphYMargin, 
@@ -76,4 +78,4 @@ export{//constants
 	//color panel elements
 	colorAdjustPanel, textColorButton, redSlider, greenSlider, blueSlider, colorDisplay, colorCodeInput, colorButton,
 	//Tree object and setTree function
-	bulletPtTree, setTree};
+	colorObject, bulletPtTree, setTree};

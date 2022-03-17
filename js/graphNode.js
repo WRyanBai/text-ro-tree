@@ -7,7 +7,6 @@ import{SelectableNode} from './SelectableNode.js';
 Variables and functions related to formatting the graph is imported.*/
 import{formatGraph} from './functionsGraph.js';
 import {bulletPtTree, canvas, graphXMargin, graphYMargin} from './main.js';
-import {selectNode} from './functionsBulletPt.js';
 import{removePx} from './functionUtils.js';
 
 class GraphNode extends SelectableNode {
@@ -98,6 +97,14 @@ class GraphNode extends SelectableNode {
 	setFontSize(newFontSize){
 		this.setTextProperty('fontSize',newFontSize);
 		this.updateHeight(true);
+	}
+	
+	getGraphColor(){
+		return(window.getComputedStyle(this.graphElement).backgroundColor);
+	}
+	
+	setGraphColor(newColorCode){
+		this.graphElement.style.backgroundColor = newColorCode;
 	}
 }
 

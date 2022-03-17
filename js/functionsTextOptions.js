@@ -2,7 +2,7 @@
 of a bullet point and the properties of the corresponding node.*/
 
 //import the bulletPtTree
-import {bulletPtTree, body,
+import {bulletPtTree, colorObject, body,
 	colorAdjustPanel, textColorButton, redSlider,
 	greenSlider, blueSlider, colorDisplay, colorCodeInput, colorButton} from './main.js';
 import {findNextIndexOf, parentContains} from './functionUtils.js';
@@ -45,38 +45,45 @@ function changeNodeWidth (e){
 }
 
 function initializeColor(){
-	const colorObject = new Color(redSlider.value, greenSlider.value, blueSlider.value)
-	redSlider.addEventListener('input', (e) => {colorObject.setRed(e.target.value)});
-	greenSlider.addEventListener('input', (e) => {colorObject.setGreen(e.target.value)});
-	blueSlider.addEventListener('input', (e) => {colorObject.setBlue(e.target.value)});
-	colorCodeInput.addEventListener('change', (e) => {colorObject.setColorCode(e.target.value)});
-	colorButton.addEventListener('click', (e) => confirmColor(colorObject));
-	return(colorObject);
+	const newColorObject = new Color(redSlider.value, greenSlider.value, blueSlider.value)
+	redSlider.addEventListener('input', (e) => {newColorObject.setRed(e.target.value)});
+	greenSlider.addEventListener('input', (e) => {newColorObject.setGreen(e.target.value)});
+	blueSlider.addEventListener('input', (e) => {newColorObject.setBlue(e.target.value)});
+	colorCodeInput.addEventListener('change', (e) => {newColorObject.setColorCode(e.target.value)});
+	colorButton.addEventListener('click', (e) => confirmColor(newColorObject));
+	return(newColorObject);
 }
 
-function changeColor(colorType, colorObject){
+function changeColor(colorType){
 	//The colorType variable specifies whether the color being set is the text color
 	//or color of node element.
 	colorAdjustPanel.style.visibility = 'visible';
 	if(colorType === 'text'){
 		colorObject.setColorCodeRGB(bulletPtTree.getCurrentNode().getTextProperty('color'));
+	}else if(colorType === 'node'){
+		colorObject.setColorCodeRGB(bulletPtTree.getCurrentNode().getGraphNode().getGraphColor());
 	}
 	colorObject.setColorType(colorType);
 	body.addEventListener('click', hideColorPanel);
 }
 
-function confirmColor(colorObject){
+function confirmColor(){
 	if(colorObject.getColorType() === 'text'){
 		bulletPtTree.getCurrentNode().setTextProperty('color', colorObject.getColorCode());
+	}else if(colorObject.getColorType() === 'node'){
+		bulletPtTree.getCurrentNode().getGraphNode().setGraphColor(colorObject.getColorCode());
 	}
 	colorAdjustPanel.style.visibility = 'hidden';
 }
 
 function hideColorPanel(e){
 	if(parentContains(e.target, 'colorAdjustPanel') === null &&
-		parentContains(e.target, 'textColorButton') === null){
-		colorAdjustPanel.style.visibility = 'hidden';
-		body.removeEventListener('click', hideColorPanel);
+		(colorObject.getColorType() === 'text' && 
+		parentContains(e.target, 'textColorButton') === null ||
+		colorObject.getColorType() === 'node' &&
+		parentContains(e.target, 'nodeColorButton') === null)){
+			colorAdjustPanel.style.visibility = 'hidden';
+			body.removeEventListener('click', hideColorPanel);
 	}
 }
 

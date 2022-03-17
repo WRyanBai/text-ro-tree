@@ -10,7 +10,7 @@ import{Tree} from './Tree.js';
 import{formatGraph, enlargeGraph, exitEnlargeGraph} from './functionsGraph.js';
 import {findNextIndexOf} from './functionUtils.js';
 //import the bulletPtTree
-import {bulletPtTree, graphXMargin, graphYMargin, setTree} from './main.js';
+import {bulletPtTree, graphXMargin, graphYMargin, setTree, colorObject} from './main.js';
 
 async function loadFile(){
 	/*This function is fired when the user clicks on the load button. The user will be
@@ -32,8 +32,8 @@ async function loadFile(){
 			//Construct a new tree in the page from the fileText.
 			treeFromString(fileText);
 		}catch(e){
-			console.log(e);
 			//In the case of an error, recover the previous tree.
+			console.log('invalid tree');
 			treeFromString(previousTree);
 		}
 	}catch(e){
@@ -57,18 +57,23 @@ async function saveFile(){
 		],
 	};
 	//Prompts a file picker dialog box for users to create a file in their local storage to save to.
-	const saveFileHandle = await window.showSaveFilePicker();
-	//Create writable file stream to write to the file created by user.
-	const writable = await saveFileHandle.createWritable();
-	/*The contents of the file is a string representation of the tree diagram,
-	created using the convertString() method.*/
-	const fileContent = bulletPtTree.convertString();
-	//Write the content and close the writable file stream.
-	await writable.write(fileContent);
-	await writable.close();
+	try{
+		const saveFileHandle = await window.showSaveFilePicker();
+		//Create writable file stream to write to the file created by user.
+		const writable = await saveFileHandle.createWritable();
+		/*The contents of the file is a string representation of the tree diagram,
+		created using the convertString() method.*/
+		const fileContent = bulletPtTree.convertString();
+		//Write the content and close the writable file stream.
+		await writable.write(fileContent);
+		await writable.close();
+	}catch(e){
+		
+	}
 }
 
 function treeFromString(treeString){
+	console.log('here');
 	//This function takes a string representation of a tree as input and creates a tree object from the string.
 	let newTree;
 	//Check if string starts with the valid confirmation header, throw error if header is incorrect.
@@ -142,6 +147,16 @@ function treeFromString(treeString){
 		}
 		treeString = results[1];
 		
+		results = readProperty("textColor", "string", treeString);
+		colorObject.setColorCodeRGB(results[0]);
+		let textColor = colorObject.getColorCode();
+		treeString = results[1];
+		
+		results = readProperty("nodeCOlor", "string", treeString);
+		colorObject.setColorCodeRGB(results[0]);
+		let nodeColor = colorObject.getColorCode();
+		treeString = results[1];
+		
 		//Remove '<node>' from string.
 		treeString = treeString.substring(6);
 			
@@ -163,6 +178,8 @@ function treeFromString(treeString){
 		newNode.setTextProperty('fontStyle', fontStyle);
 		newNode.setTextProperty('fontWeight', fontWeight);
 		newNode.setTextProperty('textDecoration', textDecoration);
+		newNode.setTextProperty('color', textColor);
+		newNode.getGraphNode().setGraphColor(nodeColor);
 			
 		if(currentLayer === 0){
 			//If currentLayer is 0, thenew node corresponds to the first node of the tree.
@@ -174,7 +191,7 @@ function treeFromString(treeString){
 			 must be a child of the direct node, thus the treeLayer should only be larger by 1.*/
 			if(treeLayer === currentLayer + 1){
 				newTree.getCurrentNode().appendChildNode(newNode);
-				newTree.setCurrentNode(newNode, false);
+				newTree.setCurrentNode(newNode);
 				currentLayer = treeLayer;
 			}else{
 				//If this is not the case, then the file is invalid. An error will be thrown.
@@ -182,19 +199,20 @@ function treeFromString(treeString){
 			}
 		}else if(treeLayer === currentLayer){
 			newTree.getCurrentNode().getParent().appendChildNode(newNode);
-			newTree.setCurrentNode(newNode, false);
+			newTree.setCurrentNode(newNode);
 			currentLayer = treeLayer;
 		}else if(treeLayer < currentLayer){
 			for(let j = 0; j < currentLayer - treeLayer + 1; j++){
-				newTree.setCurrentNode(newTree.getCurrentNode().getParent(), false);
+				newTree.setCurrentNode(newTree.getCurrentNode().getParent());
 			}
 			newTree.getCurrentNode().appendChildNode(newNode);
 				
-			newTree.setCurrentNode(newNode, false);
+			newTree.setCurrentNode(newNode);
 			currentLayer = treeLayer;
 		}
 	}
 	setTree(newTree);
+	bulletPtTree.setCurrentNode(null);
 	formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
 }
 

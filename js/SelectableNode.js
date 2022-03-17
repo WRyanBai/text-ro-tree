@@ -1,4 +1,4 @@
-import {selectNode, unselectNode} from './functionsBulletPt.js';
+import {nodeClicked} from './functionsBulletPt.js';
 
 class SelectableNode{
 	constructor(){
@@ -7,7 +7,7 @@ class SelectableNode{
 	
 	setNodeElement(nodeElement){
 		this.nodeElement = nodeElement;
-		this.nodeElement.addEventListener('click', selectNode);
+		this.nodeElement.addEventListener('click', nodeClicked);
 	}
 	
 	setTextElement(textElement){
@@ -33,14 +33,10 @@ class SelectableNode{
 	
 	highlight(selectableNode){
 		this.nodeElement.style.border = '3px solid red';
-		this.nodeElement.removeEventListener('click', selectNode);
-		this.nodeElement.addEventListener('click', unselectNode);
 	}
 	
 	unhighlight(){
 		this.nodeElement.style.border = 'none';
-		this.nodeElement.removeEventListener('click', unselectNode);
-		this.nodeElement.addEventListener('click', selectNode);
 	}
 }
 
