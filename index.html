@@ -1,0 +1,78 @@
+<DOCTYPE! html>
+<html>
+	<head>
+		<meta charset = "UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+		<div id = "optionsPanel">
+			<div id = "fileOptions">
+				<div id = "loadFiles" class = "button">
+					open file
+				</div>
+				<div id = "saveFiles" class = "button">
+					save file
+				</div>
+				<div id = "printGraph" class = "button">
+					print graph
+				</div>
+				<div id = "enlargeGraph" class = "button">
+					enlarge graph
+				</div>
+			</div>
+			<div id='fontSizeInput' class='inputContainer'>
+				<p>Font size</p>
+				<input type='number' min=5 max=70></input>
+			</div>
+			<div id='nodeWidthInput' class='inputContainer'>
+				<p>Node width</p>
+				<input type='number' min=70 max=1000></input>
+			</div>
+			<div id = "textColorButton" class = "button">
+				set text color
+			</div>
+			<div id = "nodeColorButton" class = "button">
+				set node color
+			</div>
+			<div id="textOptions">
+				<div id = "italicsButton" class = "button">
+					italicize
+				</div>
+				<div id = "boldButton" class = "button">
+					bold
+				</div>
+				<div id = "underlineButton" class = "button">
+					Underline
+				</div>
+			</div>
+		</div>
+		
+		<div id = "canvasContainer">
+			<div id = "canvas">
+			
+			</div>
+		</div>
+		
+		<ul id = "bulletPtContainer">
+			<li class = "bulletPtSection">
+				<div class="bulletPtText" contenteditable = true>
+				</div>
+			</li>
+		</ul>
+		
+		<div id = 'colorAdjustPanel'>
+			<input type='text' id = 'colorCodeInput' value='#000000'></p>
+			<div id = 'colorDisplay'></div>
+			<p id = 'red'>Red</p>
+			<input type='range' id = 'redSlider' class='slider' min='0' max='255' value='0'>
+			<p id = 'green'>Green</p>
+			<input type='range' id = 'blueSlider' class='slider' min='0' max='255' value='0'>
+			<p id = 'blue'>Blue</p>
+			<input type='range' id = 'greenSlider' class='slider' min='0' max='255' value='0'>
+			<div id='colorButton' class='button'>Set color</div>
+		</div>
+		
+		<!-- script file -->
+        <script type="module" src="./js/main.js"></script>
+	</body>
+</html>
