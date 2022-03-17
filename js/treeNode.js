@@ -11,6 +11,8 @@ of bullet points will need to access these functions.*/
 import {handleKeyPress, textChange} from './functionsBulletPt.js';
 import{removePx} from './functionUtils.js';
 
+import {fontSizeInput, nodeWidthInput} from './main.js';
+
 class TreeNode extends SelectableNode{
 	constructor(bulletPtSection){
 		super()
@@ -159,12 +161,17 @@ class TreeNode extends SelectableNode{
 		super.highlight();
 		this.graphNode.highlight();
 		this.bulletPtText.focus();
+		
+		fontSizeInput.value = removePx(this.getTextProperty('fontSize'));
+		nodeWidthInput.value = this.getGraphNode().getGraphWidth();
 	}
 	
 	unhighlight(){
 		super.unhighlight();
 		this.graphNode.unhighlight();
 		this.bulletPtText.blur();
+		fontSizeInput.value = '';
+		nodeWidthInput.value = '';
 	}
 }
 

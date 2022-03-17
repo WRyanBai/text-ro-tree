@@ -1,6 +1,7 @@
 //This module contains functions related to formatting the graph.
 
 import {body, canvasContainer, bulletPtTree} from './main.js';
+import {preventBlur} from './functionsBulletPt.js';
 
 function formatGraph (nodeList,startX, startY, graphXMargin, graphYMargin){
 	startX += graphXMargin;
@@ -51,6 +52,7 @@ function enlargeGraph(){
 	body.style.width = viewPortWidth;
 	if(bulletPtTree.getCurrentNode() != null){
 		bulletPtTree.getCurrentNode().unhighlight();
+		body.removeEventListener('click', preventBlur);
 	}
 	
 	body.addEventListener('mousedown', exitEnlargeGraph);

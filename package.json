@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/WRyanBai/textToTree/issues"
   },
-  "homepage": "https://github.com/WRyanBai/textToTree#readme",
+  "homepage": "https://github.com/WRyanBai/textToTree",
   "dependencies": {
     "gh-pages": "^3.2.3"
   }

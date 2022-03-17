@@ -28,6 +28,9 @@
 				<p>Node width</p>
 				<input type='number' min=70 max=1000></input>
 			</div>
+			<div id = "textColorButton" class = "button">
+				set text color
+			</div>
 			<div id="textOptions">
 				<div id = "italicsButton" class = "button">
 					italicize
@@ -40,14 +43,7 @@
 				</div>
 			</div>
 		</div>
-		<!--testing-->
-		<!-- <div id = 'colorAdjustPanel'>
-			<div id = 'colorDisplay'>
-			</div>
-			<input type='range' class='slider' min='0' max='255'>
-			<input type='range' class='slider' min='0' max='255'>
-			<input type='range' class='slider' min='0' max='255'>
-		</div> -->
+		
 		<div id = "canvasContainer">
 			<div id = "canvas">
 			
@@ -60,6 +56,18 @@
 				</div>
 			</li>
 		</ul>
+		
+		<div id = 'colorAdjustPanel'>
+			<input type='text' id = 'colorCodeInput' value='#000000'></p>
+			<div id = 'colorDisplay'></div>
+			<p id = 'red'>Red</p>
+			<input type='range' id = 'redSlider' class='slider' min='0' max='255' value='0'>
+			<p id = 'green'>Green</p>
+			<input type='range' id = 'blueSlider' class='slider' min='0' max='255' value='0'>
+			<p id = 'blue'>Blue</p>
+			<input type='range' id = 'greenSlider' class='slider' min='0' max='255' value='0'>
+			<div id='colorButton' class='button'>Set color</div>
+		</div>
 		
 		<!-- script file -->
         <script type="module" src="./js/main.js"></script>

@@ -8,7 +8,8 @@ import{Tree} from './Tree.js';
 //imported functions
 import{loadFile, saveFile, printGraph} from './functionsFileIO.js';
 import{formatGraph, enlargeGraph} from './functionsGraph.js';
-import{italicizeText, boldText, underlineText, changeFontSize, changeNodeWidth} from './functionsTextOptions.js';
+import{italicizeText, boldText, underlineText, changeFontSize, changeNodeWidth,
+	initializeColor, changeColor} from './functionsTextOptions.js';
 
 //Constant values;
 const graphXMargin = 50;
@@ -53,5 +54,26 @@ fontSizeInput.addEventListener('change', changeFontSize);
 const nodeWidthInput = document.querySelector('#nodeWidthInput').lastElementChild;
 nodeWidthInput.addEventListener('change', changeNodeWidth);
 
-export{graphXMargin, graphYMargin, bulletPtContainer, canvas,
-body, canvasContainer, bulletPtTree, setTree, fontSizeInput, nodeWidthInput};
+//Elements and event listeners related to the color panel.
+const colorAdjustPanel = document.querySelector('#colorAdjustPanel');
+const textColorButton = document.querySelector('#textColorButton');
+const redSlider = document.querySelector('#redSlider');
+const greenSlider = document.querySelector('#greenSlider');
+const blueSlider = document.querySelector('#blueSlider');
+const colorDisplay = document.querySelector('#colorDisplay');
+const colorCodeInput = document.querySelector('#colorCodeInput');
+const colorButton = document.querySelector('#colorButton');
+
+const colorObject = initializeColor();
+textColorButton.addEventListener('click', (e) => {changeColor('text', colorObject)});
+
+export{//constants
+	graphXMargin, graphYMargin, 
+	//text property inputs
+	bulletPtContainer, canvas, body, canvasContainer,
+	//text property inputs
+	fontSizeInput, nodeWidthInput,
+	//color panel elements
+	colorAdjustPanel, textColorButton, redSlider, greenSlider, blueSlider, colorDisplay, colorCodeInput, colorButton,
+	//Tree object and setTree function
+	bulletPtTree, setTree};

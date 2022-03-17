@@ -8,6 +8,7 @@ import{TreeNode} from './TreeNode.js';
 import{Tree} from './Tree.js';
 //import function
 import{formatGraph, enlargeGraph, exitEnlargeGraph} from './functionsGraph.js';
+import {findNextIndexOf} from './functionUtils.js';
 //import the bulletPtTree
 import {bulletPtTree, graphXMargin, graphYMargin, setTree} from './main.js';
 
@@ -203,14 +204,10 @@ function readProperty(propertyName, propertyType, treeString, textLength){
 	treeString = treeString.substring(propertyName.length + 1);
 	
 	if (propertyName != "text"){
-		//TProperties other than text are handled in this branch.
-		let i = 0;
+		//Properties other than text are handled in this branch.
+		
 		//Use a for loop to find the index of next semicolon
-		for (i; i < treeString.length; i++){
-			if(treeString.charAt(i) === ';'){
-				break;
-			}
-		}
+		let i = findNextIndexOf(treeString, ';');
 		//The propertyValue is written in the substring up until the semicolon
 		propertyValue = treeString.substring(0, i);
 		if (propertyType === 'number'){
