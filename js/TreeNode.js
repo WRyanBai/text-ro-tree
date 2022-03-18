@@ -4,8 +4,8 @@ bullet points and corresponding graphNodes*/
 
 //Import classes
 import{SelectableNode} from './SelectableNode.js';
-import {GraphNode} from './graphNode.js';
-import{GraphLine} from './graphLine.js';
+import {GraphNode} from './GraphNode.js';
+import{GraphLine} from './GraphLine.js';
 /*Import functions related to bullet points. Listeners for events on html elements
 of bullet points will need to access these functions.*/
 import {handleKeyPress, textChange} from './functionsBulletPt.js';
