@@ -108,12 +108,12 @@ class Selectable{
 	}
 	
 	getXCoord(){
-		let xCoord = Utils.removePx(this.getPageProperty('left'))
+		let xCoord = Utils.removePx(this.getPageProperty('left'));
 		return(xCoord);
 	}
 	
 	getYCoord(){
-		let yCoord = Utils.removePx(this.getPageProperty('top'))
+		let yCoord = Utils.removePx(this.getPageProperty('top'));
 		return(yCoord);
 	}
 	

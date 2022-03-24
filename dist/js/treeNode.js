@@ -25,6 +25,8 @@ class TreeNode{
 			
 			//parentNode points to its parent node in the data tree
 			this.parentNode = null;
+			
+			this.autoformat = true;
 		}
 		
 		//An array of children. Root nodes and regular TreeNodes all have this field.
@@ -103,6 +105,13 @@ class TreeNode{
 		}
 	}
 	
+	transformLines(){
+		//iterate through lineList and adjust the position of each line.
+		for(let j = 0; j<this.lineList.length; j++){
+			this.lineList[j].transformLine();
+		}
+	}
+	
 	getIndex(){
 		//This method returns the index of this node in its parent's children array.
 		let i = 0;
@@ -123,6 +132,14 @@ class TreeNode{
 	
 	setIsRoot(newIsRoot){
 		this.isRoot = newIsRoot;
+	}
+	
+	setAutoformat(newBoolean){
+		this.autoformat = newBoolean;
+	}
+	
+	getAutoformat(){
+		return(this.autoformat);
 	}
 	
 	getParentNode(){
@@ -267,6 +284,7 @@ class TreeNode{
 	
 	setCoord(xCoord, yCoord){
 		this.graphNode.setCoord(xCoord, yCoord);
+		this.transformLines();
 	}
 	
 	getXCoord(){
@@ -315,6 +333,11 @@ class TreeNode{
 		treeString = treeString + 'isUnderlined:' + this.isUnderlined() + ';';
 		treeString = treeString + 'textColor:' + this.getTextColor() + ';';
 		treeString = treeString + 'nodeColor:' + this.getNodeColor() + ';';
+		treeString = treeString + 'autoformat:' + this.autoformat + ';';
+		if(this.autoformat === false){
+			treeString = treeString + 'xCoord:' + this.getXCoord() + ';';
+			treeString = treeString + 'yCoord:' + this.getYCoord() + ';';
+		}
 		treeString = treeString + '<node>';
 		
 		return(treeString);

@@ -17,11 +17,20 @@ class FileOptions{
 		//The fileHandle is an object representing the file that will be saved to.
 		FileOptions.fileHandle = null;
 		
+		FileOptions.allChangesSaved = true;
+		window.addEventListener('fileChanged', FileOptions.recordChange)
+		
 		//Add listeners to interface elements
 		saveButton.addEventListener('click', FileOptions.saveFile);
 		saveAsButton.addEventListener('click', FileOptions.saveFileAs);
 		openButton.addEventListener('click', FileOptions.openFile);
 		exportButton.addEventListener('click', FileOptions.exportFile);
+	}
+	
+	static recordChange(){
+		if(FileOptions.allChangesSaved === true){
+			FileOptions.allChangesSaved = false;
+		}
 	}
 	
 	static async saveFile(){
@@ -36,6 +45,7 @@ class FileOptions{
 			//Write the content and close the writable file stream.
 			await writable.write(fileContent);
 			await writable.close();
+			FileOptions.allChangesSaved = true;
 		}else{
 			//If fileHandle is null, call saveFileAs method.
 			await FileOptions.saveFileAs();
@@ -58,8 +68,18 @@ class FileOptions{
 			//Write the content and close the writable file stream.
 			await writable.write(fileContent);
 			await writable.close();
+			FileOptions.allChangesSaved = true;
 		}catch(e){
 			//Avoids errors prompted by the case where user does not select any file.
+		}
+	}
+	
+	static async checkSaveFile(){
+		//This method checks if user wants to save the current file, and if so calls saveFile
+		const willSave = window.confirm('The current file has unsaved changes.'+
+			'Do you want to save this file?');
+		if(willSave){
+			await FileOptions.saveFile();
 		}
 	}
 	
@@ -69,6 +89,9 @@ class FileOptions{
 		const options = {types:[{description:'Text Files',accept:{'text/plain':['.txt']},},],};
 		
 		try{
+			if(FileOptions.allChangesSaved === false){
+				await FileOptions.checkSaveFile();
+			}
 			//Prompt the file picker dialog box, ctach for the error where user does not choose a file.
 			//The file picker dialog will return an array of fileHandle objects.
 			const files = await window.showOpenFilePicker(options);
@@ -94,11 +117,18 @@ class FileOptions{
 				//Dispatch an event indicating that graph has changed
 				window.dispatchEvent(Main.getGraphChangedEvent());
 			}catch(e){
-				//In the case of an invalid file format, recover the current tree.
-				FileOptions.treeFromString(currentTree);
+				//In the case of an invalid file format, recover the current tree;
+				alert('This file cannot be opened because its format is invalid.');
+				Main.setTree(FileOptions.treeFromString(currentTree));
+				//setCurrentNode to null;
+				Main.getTree().setCurrentNode(null);
+				//Dispatch an event indicating selected node has changed
+				window.dispatchEvent(Main.getSelectedChangedEvent());
+				//Dispatch an event indicating that graph has changed
+				window.dispatchEvent(Main.getGraphChangedEvent());
 			}
 		}catch(e){
-			console.log(e);
+			
 		}
 	}
 	
@@ -109,12 +139,8 @@ class FileOptions{
 		if(treeString.substring(0, 23) != "<!confirmation header!>"){
 			throw("invalid file");
 		}
-		//Remove all current elements in the inner HTML of the outputCanvas and inputField.
-		//They will be overwritten when a new tree is loaded.
-		const outputCanvas = document.querySelector('#outputCanvas');
-		outputCanvas.innerHTML = "";
-		const inputField = document.querySelector('#inputField');
-		inputField.innerHTML = "";
+		//Remove all current elements in the inner HTML of the current Tree.
+		Main.getTree().remove();
 		
 		//Get substring after header.
 		treeString = treeString.substring(23);
@@ -183,6 +209,23 @@ class FileOptions{
 			let nodeColor = results[0];
 			treeString = results[1];
 			
+			//read autoformat
+			results = FileOptions.readProperty("autoformat", "boolean", treeString);
+			let autoformat = results[0];
+			treeString = results[1];
+			
+			let xCoord;
+			let yCoord;
+			if(autoformat === false){
+				results = FileOptions.readProperty("xCoord", "number", treeString);
+				xCoord = results[0];
+				treeString = results[1];
+				
+				results = FileOptions.readProperty("yCoord", "number", treeString);
+				yCoord = results[0];
+				treeString = results[1];
+			}
+			
 			//Remove '<node>' from string.
 			treeString = treeString.substring(6);
 			
@@ -197,6 +240,10 @@ class FileOptions{
 			if(isUnderlined){newNode.underline()};
 			newNode.setTextColor(textColor);
 			newNode.setNodeColor(nodeColor);
+			if(autoformat === false){
+				newNode.setAutoformat(false);
+				newNode.setCoord(xCoord, yCoord);
+			}
 			//add event listeners to elements of the newNode.
 			newNode.getBulletPoint().getBulletPtElement().addEventListener('click', InputField.handleClick);
 			newNode.getBulletPoint().getBulletPtElement().addEventListener('dblclick', InputField.handleClick);
@@ -204,7 +251,6 @@ class FileOptions{
 			newNode.getGraphNode().getGraphElement().addEventListener('dblclick', InputField.handleClick);
 			newNode.getBulletPoint().getBulletPtText().addEventListener('input', InputField.textChange);
 			newNode.getBulletPoint().getBulletPtText().addEventListener('keydown', InputField.handleKeyDown);
-			
 			//Append the newNode to newTree according to its treeLayer.
 			if(currentLayer === 0){
 				//if currentLayer is 0, the newNode is the firstNode of the tree.
@@ -238,7 +284,7 @@ class FileOptions{
 				//If the layer of the newNode is above the last added node.
 				for(let j = 0; j < currentLayer - treeLayer + 1; j++){
 					//Traverse up the tree until currentNode is one layer above the layer of newNode
-					newTree.setCurrentNode(newTree.getCurrentNode().getParent());
+					newTree.setCurrentNode(newTree.getCurrentNode().getParentNode());
 				}
 				//Append newNode to currentNode
 				newTree.getCurrentNode().appendChildNode(newNode);
@@ -249,7 +295,6 @@ class FileOptions{
 			}
 		}
 		//Once the entire string is iterated through, return the newTree.
-		console.log(newTree);
 		return(newTree);
 	}
 	
