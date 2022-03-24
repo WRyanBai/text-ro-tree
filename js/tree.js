@@ -1,14 +1,16 @@
-/*This module contains the tree class, which is constructed from treeNode objects.
-The tree class represents the parent-child relationship between nodes in the tree diagram.*/
+//The Tree class represents a data tree composed of TreeNode objects.
 
 import {TreeNode} from './TreeNode.js';
-import{removePx} from './functionUtils.js';
+import{Utils} from './Utils.js';
+import{Main} from './Main.js';
 
 class Tree{
-	constructor(firstNode){
-		this.rootNode = new TreeNode();
-		this.currentNode = firstNode;
-		this.rootNode.appendChildNode(firstNode);
+	constructor(){
+		//The rootNode is only a logical node, it has no html element manifestations on the page.
+		this.rootNode = new TreeNode(true);
+		
+		//The currentNode is set to null by default.
+		this.currentNode = null;
 	}
 	
 	getRootNode(){
@@ -21,69 +23,81 @@ class Tree{
 	
 	setCurrentNode(newCurrentNode){
 		this.currentNode = newCurrentNode;
+		//Dispatch an event to signal that the selected node has changed, so that the interface can
+		//respond correspondingly.
 	}
 	
 	searchNode(searchElement, searchCurrent){
+		//This element traverses the tree recursively to find a treeNode which contains
+		//searchElement as either its graphElement or bulletPtElement.
+		//searchCurrent refers to the TreeNode currently being searched.
+		
 		if (searchCurrent === undefined){
+			//When searchCurrent is not entered, begin with the first child of rootNode by default.
 			searchCurrent = this.rootNode.getChildren()[0];
 		}
 		
-		// If the current Node is the selectedNode, return current Node
-		if(searchCurrent.getBulletPtSection() === searchElement ||
+		// If the searchCurrent contains searchElement, return current Node
+		if(searchCurrent.getBulletPoint().getBulletPtElement() === searchElement ||
 			searchCurrent.getGraphNode().getGraphElement() === searchElement){
 			return(searchCurrent);
 		}
-		// else, if current node has children, search its children
+		// else, if searchCurrent has children, search its children
 		else if(searchCurrent.getChildren().length != 0){
 			let searchResult = this.searchNode(searchElement, searchCurrent.getChildren()[0])
-			//If the selectedNode is found in the children, return results from children
+			//If the searchELement is found in the children, return results from children
 			if(searchResult != null){
 				return(searchResult);
 			}
 		}
-		/* At this point, the current node is not the selectedNode and it either has no children
-		or a search of children returned nothing. Thus, search siblings, if any exist.*/
-		let siblingNumbers = searchCurrent.getParent().getChildren().length;
+		//This branch of code is reached if searchCurrent does not contain searchElement and
+		//it either has no children or its children returned null.
+		//Check is searchCurrent is the last of its siblings.
+		let siblingNumbers = searchCurrent.getParentNode().getChildren().length;
 		//If current node has no siblings or is the last sibling, return null.
-		if (searchCurrent.getSiblingIndex() === searchCurrent.getParent().getChildren().length - 1){
+		if (searchCurrent.getIndex() === searchCurrent.getParentNode().getChildren().length - 1){
 			return(null);
 		}
-		// otherwise, search next sibling.
+		// otherwise, search next sibling and return its results.
 		else{
-			let i = searchCurrent.getSiblingIndex();
-			return(this.searchNode(searchElement, searchCurrent.getParent().getChildren()[i+1]));
+			let i = searchCurrent.getIndex();
+			return(this.searchNode(searchElement, searchCurrent.getParentNode().getChildren()[i+1]));
 		}
 	}
 	
-	convertString(list, treeLayer){
+	toString(list, treeLayer){
+		//A recusrive function to generate string representation of a tree.
+		//list is an array of TreeNode objects who are siblings in the tree. Every TreeNode
+		//in the list and their children will be included in the string representation.
+		//treeLayer indicates which layer of the tree these siblings occupy.
+		
 		if (list === undefined){
-			return("<!confirmation header!>"
-				+ this.convertString(this.rootNode.getChildren(), 1));
-		}
-		let treeString = "";
-		let i = 0;
-		for (i; i<list.length; i++){
-			treeString = treeString + "layer:" + treeLayer.toString() + ";";
-			treeString = treeString + "textLength:" + list[i].getText().length + ";";
-			treeString = treeString + "text:" + list[i].getText() + ";";
-			treeString = treeString + "width:" + list[i].getGraphNode().getGraphWidth() + ";";
-			treeString = treeString + "fontSize:" +
-				removePx(list[i].getGraphNode().getTextProperty('fontSize')) + ";";
-			treeString = treeString + "fontStyle:" +
-				list[i].getGraphNode().getTextProperty('fontStyle') + ";";
-			treeString = treeString + "fontWeight:" +
-				list[i].getGraphNode().getTextProperty('fontWeight') + ";";
-			treeString = treeString + "textDecoration:" +
-				list[i].getGraphNode().getTextProperty('textDecoration') + ";";
-			treeString = treeString + 'textColor:' + list[i].getTextProperty('color') + ';';
-			treeString = treeString + 'nodeColor:' + list[i].getGraphNode().getGraphColor() + ';';
-			treeString = treeString + "<node>";
+			//The parameters are undefined in the first layer of recursion.
 			
-			if (list[i].getChildren().length != 0){
-				treeString = treeString + this.convertString(list[i].children,treeLayer+1);
+			//The recursion is initiated by setting the treeLayer to 1 and calling on this
+			//method with list set to the first layer of the tree, which are the direct children
+			//of the root node.
+			let treeLayer = 1;
+			let treeString = this.toString(this.rootNode.getChildren(), treeLayer);
+			//add a header to confirm that this string is in correct format.
+			treeString = '<!confirmation header!>' + treeString;
+			return(treeString)
+		}else{
+			let treeString = "";
+			let i = 0;
+			for (i; i<list.length; i++){
+				//In the recursive case, iterate through each TreeNode in the list
+				//Add an extra attribute layer to preserve the hierarchical structure in the string.
+				treeString = treeString + "layer:" + treeLayer.toString() + ";";
+				//Get the string representation of each TreeNode
+				treeString = treeString + list[i].toString();
+				if (list[i].getChildren().length != 0){
+					//if a node has children, call toString on its children array.
+					treeString = treeString + this.toString(list[i].children, treeLayer+1);
+				}
 			}
+			return(treeString);
 		}
-		return(treeString);
 	}
 }
 

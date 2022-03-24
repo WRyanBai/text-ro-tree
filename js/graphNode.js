@@ -1,110 +1,92 @@
-/*This module contains the graphNode class, which represents the elements that form
-the nodes of the tree diagram.*/
+//GraphNode is a subclass of Selectable that represents nodes in the tree diagram.
 
-import{SelectableNode} from './SelectableNode.js';
+import{Selectable} from './Selectable.js';
+//import the Utils class to use its utility methods.
+import{Utils} from './Utils.js';
+import{Main} from './Main.js';
 
-/*After properties or content of a graphNode is edited the graph needs to be formatted again.
-Variables and functions related to formatting the graph is imported.*/
-import{formatGraph} from './functionsGraph.js';
-import {bulletPtTree, canvas, graphXMargin, graphYMargin} from './main.js';
-import{removePx} from './functionUtils.js';
-
-class GraphNode extends SelectableNode {
-	constructor(treeNode){
+class GraphNode extends Selectable {
+	constructor(){
+		//call Selectable constructor
 		super();
 		
-		this.graphElement = document.createElement('div');
-		this.graphElement.classList.add('graphNode');
-		canvas.appendChild(this.graphElement);
-		this.graphText = document.createElement('div');
-		this.graphText.classList.add('graphText');
-		this.graphElement.appendChild(this.graphText);
-		this.xCoord = 0;
-		this.yCoord = 0;
+		//Currently the only template for nodes in the tree diagram is a rectangle with rounded corners,
+		//whose stlye is specified through the rectangleNode css class. In the future, more templates
+		//may be added, thus the styleClass attribute is used to account for future extensions.
+		//More templates can be added in the future by allowing styleclass to be modified.
+		this.nodeStyle = 'rectangleNode';
 		
-		super.setNodeElement(this.graphElement);
+		//Create an html element to represent the node in the tree diagram.
+		const graphElement = document.createElement('div');
+		graphElement.classList.add('graphElement');
+		graphElement.classList.add(this.nodeStyle);
+		//Add an html element to display text in graphElement.
+		const graphText = document.createElement('div');
+		graphText.classList.add('graphText');
+		graphElement.appendChild(graphText);
+		//Append the element to the canvas of the output window.
+		const outputCanvas = document.querySelector('#outputCanvas');
+		outputCanvas.appendChild(graphElement);
+		//Add graphElement and graphText to the field of GraphNode
+		this.graphElement = graphElement;
+		this.graphText = graphText;
+		
+		//set graphElement and graphText to be the pageElement and textElement of Selectable
+		super.setPageElement(this.graphElement);
 		super.setTextElement(this.graphText);
-		let graphElementStyles = window.getComputedStyle(this.graphElement);
-		
-		this.graphWidth = removePx(graphElementStyles.width);
-		this.graphHeight = removePx(graphElementStyles.height);
-		this.padding = removePx(graphElementStyles.padding);
-		this.lineHeight = removePx(window.getComputedStyle(this.graphText).lineHeight);
+	}
+	
+	//accessor and mutator methods
+	getNodeStyle(){
+		return this.nodeStyle;
+	}
+	
+	setNodeStyle(newNodeStyle){
+		//This function is not yet fully implemented since only one nodeStyle is currently available
+		//it is present here to improve extensibility for more potential style templates.
+		this.nodeStyle = newNodeStyle;
 	}
 	
 	getGraphElement(){
 		return(this.graphElement);
 	}
 	
-	setGraphCoord(xCoord, yCoord){
-		this.xCoord = xCoord;
-		this.yCoord = yCoord;
-		this.graphElement.style.left = xCoord.toString() + 'px';
-		this.graphElement.style.top = yCoord.toString() + 'px';
+	setGraphElement(newGraphElement){
+		this.graphElement = newGraphElement;
+		super.setPageElement(newGraphElement);
 	}
 	
-	getXCoord(){
-		return(this.xCoord);
+	getGraphText(){
+		return(this.graphText);
 	}
 	
-	getYCoord(){
-		return(this.yCoord);
+	setGraphText(newGraphText){
+		this.graphText = newGraphText;
+		super.setTextElement(newGraphText);
 	}
 	
-	getGraphWidth(){
-		return(this.graphWidth);
+	setWidth(newWidth){
+		//This method overrides the updateHeight method of Selectable.
+		//A graphCHanged event is dispatched.
+		super.setWidth(newWidth);
+		window.dispatchEvent(Main.getGraphChangedEvent());
 	}
 	
-	updateHeight(willFormatGraph){
-		let newHeight = removePx(window.getComputedStyle(this.graphText).height);
-		newHeight += 2 * this.padding;
-		if (newHeight != this.graphHeight){
-			if(newHeight === 2 * this.padding){
-				newHeight += this.lineHeight;
+	updateHeight(){
+		//This method overrides the updateHeight method of Selectable.
+		//THe functionality is the same, with the exception that the overided method
+		//Dispatches a graphChanged event, which allows the graph in the output window
+		//to be reformated once the height of a graphNode is changed.
+		
+		let newHeight = this.getTextHeight();
+		newHeight += 2 * this.getPadding();
+		if (newHeight != this.getHeight() && Math.abs(newHeight - this.getHeight()) > 1){
+			if(newHeight === 2 * this.getPadding()){
+				newHeight += Utils.removePx(this.getTextProperty('lineHeight'));
 			}
-			this.setGraphHeight(newHeight);
-			if(willFormatGraph){
-				formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
+			this.setHeight(newHeight);
+			window.dispatchEvent(Main.getGraphChangedEvent());
 			}
-		}
-	}
-	
-	setGraphWidth(graphWidth){
-		this.graphWidth = graphWidth;
-		this.graphElement.style.width = graphWidth.toString() + 'px';
-		this.updateHeight(false);
-		formatGraph(bulletPtTree.getRootNode().getChildren(), 0, 0, graphXMargin, graphYMargin);
-	}
-	
-	getGraphHeight(){
-		return(this.graphHeight);
-	}
-	
-	setGraphHeight(graphHeight){
-		this.graphHeight = graphHeight;
-		this.graphElement.style.height = graphHeight.toString() + 'px';
-	}
-	
-	getText(){
-		return(this.graphText.textContent);
-	}
-	
-	setText(newText){
-		super.setText(newText);
-		this.updateHeight(true);
-	}
-	
-	setFontSize(newFontSize){
-		this.setTextProperty('fontSize',newFontSize);
-		this.updateHeight(true);
-	}
-	
-	getGraphColor(){
-		return(window.getComputedStyle(this.graphElement).backgroundColor);
-	}
-	
-	setGraphColor(newColorCode){
-		this.graphElement.style.backgroundColor = newColorCode;
 	}
 }
 

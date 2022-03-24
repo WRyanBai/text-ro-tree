@@ -1,117 +1,114 @@
-/*This module contains the treeNode class. Each treeNode object corresponds to
-a bullet point and a graphNode. The treeNode class allows for easy manipulation of
-bullet points and corresponding graphNodes*/
+//The TreeNode class represents a node in the data tree with a parent and an array of children.
 
-//Import classes
-import{SelectableNode} from './SelectableNode.js';
-import {GraphNode} from './graphNode.js';
-import{GraphLine} from './graphLine.js';
-/*Import functions related to bullet points. Listeners for events on html elements
-of bullet points will need to access these functions.*/
-import {handleKeyPress, textChange} from './functionsBulletPt.js';
-import{removePx} from './functionUtils.js';
+//Each TreeNode has a GraphNode, a BulletPoint, and multiple GraphLine objects.
+import {BulletPoint} from './BulletPoint.js';
+import {GraphNode} from './GraphNode.js';
+import {GraphLine} from './GraphLine.js';
 
-import {fontSizeInput, nodeWidthInput} from './main.js';
-
-class TreeNode extends SelectableNode{
-	constructor(bulletPtSection){
-		super()
-		if (bulletPtSection != undefined){
-			this.bulletPtSection = bulletPtSection;
-			this.bulletPtText = this.bulletPtSection.lastElementChild;
-			this.children = [];
-			this.graphNode = new GraphNode(this);
-			this.margin = window.getComputedStyle(bulletPtSection).marginLeft;
-			this.graphLines = [];
+class TreeNode{
+	constructor(isRoot){
+		//The Boolean isRoot indicates whether the node creates is the root node of a tree.
+		
+		//In cases where isRoot is not entered, it is set to false by default
+		if(isRoot === undefined){isRoot = false};
+		this.isRoot = isRoot;
+		
+		if(this.isRoot === false){
+			//A root node does not have the following fields.
 			
-			super.setNodeElement(this.bulletPtSection);
-			super.setTextElement(this.bulletPtText);
+			//create BulletPoint and GraphNode object
+			this.bulletPoint = new BulletPoint();
+			this.graphNode = new GraphNode();
 			
-			this.bulletPtText.addEventListener('keydown', handleKeyPress);
-			this.bulletPtText.addEventListener('keyup', textChange);
-		}
-		else{
-			this.margin = '0px';
-			this.children = [];
+			//This an array of GraphLine objects between this node and each of its children.
+			this.lineList = [];
+			
+			//parentNode points to its parent node in the data tree
+			this.parentNode = null;
 		}
 		
-	}
-	
-	setParent(parentNode){
-		this.parentNode = parentNode;
-		if (parentNode.margin != undefined){
-			this.margin = parentNode.getMargin();
-			this.addMargin();
-		}
-	}
-	
-	getParent (){
-		return(this.parentNode);
-	}
-	
-	getBulletPtSection(){
-		return(this.bulletPtSection);
-	}
-	
-	getBulletPtText(){
-		return(this.bulletPtText);
-	}
-	
-	getChildren(){
-		return(this.children);
+		//An array of children. Root nodes and regular TreeNodes all have this field.
+		this.children = [];
 	}
 	
 	appendChildNode(childNode, i){
-		//this method adds a node to the children array of this node
-		childNode.setParent(this);
-		//If the second parameter 'i' is not inputted, the node is added to the end of the array.
+		//this method adds a TreeNode object to the children array in the index 'i'
+		
+		//disconnect childNode from previous parent, if it has one.
+		if(childNode.getParentNode() != null){
+			childNode.getParentNode().removeChildNode(childNode);
+		}
+		//Set the parent of  childNode
+		childNode.setParentNode(this);
+		
+		//If the second parameter 'i' is not inputted, the node is by default added to the end of the array.
 		if (i === undefined){
 			this.children.push(childNode);
-			if(this.graphLines != undefined){
-				this.graphLines.push(new GraphLine(this, childNode));
+			if(this.isRoot === false){
+				//Regular nodes have graphLines connecting it to its children.
+				
+				//Create a graphLine connecting this node to childNode
+				let newLine = new GraphLine(this, childNode)
+				//Insert the line in lineList.
+				this.lineList.push(newLine);
 			}
 		}else{
 			//If the parameter 'i' is inputted, the node will be appended at the index i
 			this.children.splice(i, 0, childNode)
-			if(this.graphLines != undefined){
-				this.graphLines.splice(i, 0, new GraphLine(this, childNode));
+			if(this.isRoot === false){
+				//The index of the line in lineList is the kept same as the index of childNode in children.
+				this.lineList.splice(i, 0, new GraphLine(this, childNode));
 			}
 		}
 	}
 	
 	removeChildNode(input){
-		let i = 0;
+		//The input could be an index or a TreeNode. If it is an index, remove the child at that index.
+		//If it is a TreeNode, remove the node.
+		let i = 0;//i is the index of the childNode to remove.
 		let childrenNumber = this.children.length;
+		
 		if (typeof input === 'number'){
-			i = input;
+			i = input;//If the input is an index, set i to be input.
 		}
 		else{
+			//If the input is a TreeNode instead of an index, iterate the children array to find
+			//The index of the node in children.
 			for(i; i<childrenNumber; i++){
 				if (this.children[i]===input){
 					break;
 				}
 			}
-		}
-		if(this.graphLines != undefined){
-			this.graphLines[i].removeLine();
-		}
-		for(i; i<childrenNumber-1; i++){
-			this.children[i] = this.children[i+1];
-			if(this.graphLines != undefined){
-				this.graphLines[i] = this.graphLines[i+1];
+			if(i === childrenNumber){
+				//If the inputted node is not in children, throw an error.
+				throw('not in children');
 			}
 		}
+		if(this.isRoot === false){
+			//remove the graphLine element at i.
+			this.lineList[i].remove();
+		}
+		for(i; i<childrenNumber-1; i++){
+			//Starting with the index i+1, each TreeNode in the children array is moved to its previous index.
+			this.children[i] = this.children[i+1];
+			if(this.isRoot === false){
+				//do the same with lineList.
+				this.lineList[i] = this.lineList[i+1];
+			}
+		}
+		//pop the last element in the array, which is now redundant.
 		this.children.pop();
-		if(this.graphLines != undefined){
-			this.graphLines.pop();
+		if(this.isRoot === false){
+			this.lineList.pop();
 		}
 	}
 	
-	getSiblingIndex(){
-		//Find the index of this node in its parent's children array
+	getIndex(){
+		//This method returns the index of this node in its parent's children array.
 		let i = 0;
 		let siblingNumbers = this.parentNode.getChildren().length;
 		for(i; i<siblingNumbers; i++){
+			//Iterate through the parent's children array until the node is found.
 			if (this.parentNode.getChildren()[i] === this){
 				break;
 			}
@@ -119,55 +116,209 @@ class TreeNode extends SelectableNode{
 		return (i);
 	}
 	
-	getMargin(){
-		return(this.margin);
+	//accessor and mutator methods
+	getIsRoot(){
+		return(this.isRoot);
 	}
 	
-	setMargin(margin){
-		this.margin = margin;
-		this.bulletPtSection.style.marginLeft = margin;
+	setIsRoot(newIsRoot){
+		this.isRoot = newIsRoot;
 	}
 	
-	addMargin(){
-		//adds 20 pixels to the left margin of the bulletPtSection html element
-		this.margin = (removePx(this.margin) + 20).toString() + 'px';
-		this.bulletPtSection.style.marginLeft = this.margin;
+	getParentNode(){
+		return(this.parentNode);
+	}
+	
+	setParentNode(newParent){
+		//set the parentNode to newParent
+		this.parentNode = newParent;
+		if(newParent.getIsRoot() === false){
+			//Set the margin of the bulletPoint to be indented one time more than parentNode.
+			this.bulletPoint.setMargin(newParent.getBulletPoint().getMargin());
+			this.bulletPoint.addMargin();
+		}else{
+			//If the newParent is the rootNode, set the margin of the bulletPoint to be 20px(the default)
+			this.bulletPoint.setMargin(20)
+		}
+	}
+	
+	getBulletPoint(){
+		return(this.bulletPoint);
+	}
+	
+	setBulletPoint(newBulletPoint){
+		this.bulletPoint = newBulletPoint;
 	}
 	
 	getGraphNode(){
 		return(this.graphNode);
 	}
 	
-	getGraphLines(){
-		return(this.graphLines);
+	setGraphNode(newGraphNode){
+		this.graphNode = newGraphNode;
 	}
 	
-	setText(newText){
-		super.setText(newText);
-		this.graphNode.setText(newText);
+	getChildren(){
+		return(this.children);
 	}
 	
-	setTextProperty(propertyName, propertyValue){
-		super.setTextProperty(propertyName, propertyValue);
-		this.graphNode.setTextProperty(propertyName, propertyValue);
+	setChildren(newList){
+		this.children = newList;
 	}
 	
-	setFontSize(newFontSize){
-		super.setTextProperty('fontSize',newFontSize);
-		this.graphNode.setFontSize(newFontSize);
+	getLineList(){
+		return(this.lineList);
 	}
 	
+	setLineList(newlist){
+		this.lineList = newlist;
+	}
+	
+	//To increase encapsulation, methods to read and write the properties of BulletPoint and GraphNode
+	//Are called from TreeNode.
 	highlight(){
-		super.highlight();
+		this.bulletPoint.highlight();
 		this.graphNode.highlight();
-		this.bulletPtText.focus();
 	}
 	
 	unhighlight(){
-		super.unhighlight();
+		this.bulletPoint.unhighlight();
 		this.graphNode.unhighlight();
-		this.bulletPtText.blur();
+	}
+	
+	remove(){
+		//Remove the html elements of all bulletPoint, graphNode, and graphLine objects
+		//associated with this TreeNode.
+		this.bulletPoint.remove();
+		this.graphNode.remove();
+		for(let i = 0; i < this.lineList.length; i++){
+			this.lineList[i].remove();
+		}
+	}
+	
+	getText(){
+		return(this.bulletPoint.getText())
+	}
+	
+	setText(newText){
+		this.bulletPoint.setText(newText);
+		this.graphNode.setText(newText);
+	}
+	
+	getFontSize(){
+		return(this.bulletPoint.getFontSize())
+	}
+	
+	setFontSize(newFontSize){
+		this.bulletPoint.setFontSize(newFontSize);
+		this.graphNode.setFontSize(newFontSize);
+	}
+	
+	getTextColor(){
+		return(this.bulletPoint.getTextColor())
+	}
+	
+	setTextColor(newColor){
+		this.bulletPoint.setTextColor(newColor);
+		this.graphNode.setTextColor(newColor);
+	}
+	
+	isBold(){
+		return(this.bulletPoint.isBold())
+	}
+	
+	bold(){
+		this.bulletPoint.bold();
+		this.graphNode.bold();
+	}
+	
+	undoBold(){
+		this.bulletPoint.undoBold();
+		this.graphNode.undoBold();
+	}
+	
+	isItalicized(){
+		return(this.bulletPoint.isItalicized())
+	}
+	
+	italicize(){
+		this.bulletPoint.italicize();
+		this.graphNode.italicize();
+	}
+	
+	undoItalicize(){
+		this.bulletPoint.undoItalicize();
+		this.graphNode.undoItalicize();
+	}
+	
+	isUnderlined(){
+		return(this.bulletPoint.isUnderlined())
+	}
+	
+	underline(){
+		this.bulletPoint.underline();
+		this.graphNode.underline();
+	}
+	
+	undoUnderline(){
+		this.bulletPoint.undoUnderline();
+		this.graphNode.undoUnderline();
+	}
+	
+	setCoord(xCoord, yCoord){
+		this.graphNode.setCoord(xCoord, yCoord);
+	}
+	
+	getXCoord(){
+		return(this.graphNode.getXCoord());
+	}
+	
+	getYCoord(){
+		return(this.graphNode.getYCoord());
+	}
+	
+	setWidth(newWidth){
+		this.graphNode.setWidth(newWidth);
+	}
+	
+	getWidth(){
+		return(this.graphNode.getWidth())
+	}
+	
+	setHeight(newHeight){
+		this.graphNode.setHeight(newHeight);
+	}
+	
+	getHeight(){
+		return(this.graphNode.getHeight())
+	}
+	
+	getNodeColor(){
+		return(this.graphNode.getPageColor());
+	}
+	
+	setNodeColor(newColor){
+		this.graphNode.setPageColor(newColor);
+	}
+	
+	toString(){
+		//generates a string representation of data relevant to this treeNode.
+		let treeString = "";
+		
+		//Store property values in the format 'propertyName:propertyValue;'
+		treeString = treeString + 'textLength:' + this.getText().length + ';';
+		treeString = treeString + 'text:' + this.getText() + ';';
+		treeString = treeString + 'width:' + this.getWidth() + ';';
+		treeString = treeString + 'fontSize:' + this.getFontSize() + ';';
+		treeString = treeString + 'isItalicized:' + this.isItalicized() + ';';
+		treeString = treeString + 'isBold:' + this.isBold() + ';';
+		treeString = treeString + 'isUnderlined:' + this.isUnderlined() + ';';
+		treeString = treeString + 'textColor:' + this.getTextColor() + ';';
+		treeString = treeString + 'nodeColor:' + this.getNodeColor() + ';';
+		treeString = treeString + '<node>';
+		
+		return(treeString);
 	}
 }
 
-export {TreeNode}
+export{TreeNode}

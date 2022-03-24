@@ -5,74 +5,125 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 	</head>
 	<body>
-		<div id = "optionsPanel">
-			<div id = "fileOptions">
-				<div id = "loadFiles" class = "button">
-					open file
+		<div id='wrapper'>
+			<div id = "optionsPanel">
+				<div id = "fileOptions">
+					<div class='textLabel'>
+						File Options
+					</div>
+					<div id = "openButton" class = "button">
+						<img class='icon' src='img/iconOpen.gif'>
+						<div class='textLabel'>
+							Open
+						</div>
+					</div>
+					<div id = "saveButton" class = "button">
+						<img class='icon' src='img/iconSave.gif'>
+						<div class='textLabel'>
+							Save
+						</div>
+					</div>
+					<div id = "saveAsButton" class = "button">
+						<img class='icon' src='img/iconSaveAs.gif'>
+						<div class='textLabel'>
+							Save As
+						</div>
+					</div>
+					<div id = "exportButton" class = "button">
+						<img class='icon' src='img/iconExport.gif'>
+						<div class='textLabel'>
+							Export
+						</div>
+					</div>
 				</div>
-				<div id = "saveFiles" class = "button">
-					save file
+				<div id = 'textOptions'>
+					<div class='textLabel'>
+						Text Options
+					</div>
+					<div id='fontSizeInputContainer'>
+						<div class = 'textLabel'>
+							Font Size
+						</div>
+						<input id='fontSizeInput' type='number' min=5 max=50></input>
+					</div>
+					<div id = "textColorButton" class = "button">
+						<div id = 'textColorDisplay' class='colorDisplay'></div>
+						<div class = 'textLabel'>
+							Text Color
+						</div>
+					</div>
+					<div id = "italicButton" class = "button">
+						<img class='icon' src='img/iconItalic.gif'>
+						<div class='textLabel'>
+							Italic
+						</div>
+					</div>
+					<div id = "boldButton" class = "button">
+						<img class='icon' src='img/iconBold.gif'>
+						<div class='textLabel'>
+							Bold
+						</div>
+					</div>
+					<div id = "underlineButton" class = "button">
+						<img class='icon' src='img/iconUnderline.gif'>
+						<div class='textLabel'>
+							Under Line
+						</div>
+					</div>
 				</div>
-				<div id = "printGraph" class = "button">
-					print graph
+				<div id = 'nodeOptions'>
+					<div class='textLabel'>
+						Node Options
+					</div>
+					<div id ='nodeWidthInputContainer'>
+						<div class = 'textLabel'>
+							Node Width
+						</div>
+						<input id='nodeWidthInput' type='number' min=5 max=50></input>
+					</div>
+					<div id = "nodeColorButton" class = "button">
+						<div id = 'nodeColorDisplay' class='colorDisplay'></div>
+						<div class = 'textLabel'>
+							Node Color
+						</div>
+					</div>
 				</div>
-				<div id = "enlargeGraph" class = "button">
-					enlarge graph
+				<div id='helpOptions'>
+					<div class='textLabel'>
+						Help
+					</div>
+					<a id = "helpButton" class = "button" href='documentation.html' target='_blank'>
+						<img class='icon' src='img/iconHelp.gif'>
+					</a>
 				</div>
 			</div>
-			<div id='fontSizeInput' class='inputContainer'>
-				<p>Font size</p>
-				<input type='number' min=5 max=70></input>
-			</div>
-			<div id='nodeWidthInput' class='inputContainer'>
-				<p>Node width</p>
-				<input type='number' min=70 max=1000></input>
-			</div>
-			<div id = "textColorButton" class = "button">
-				set text color
-			</div>
-			<div id = "nodeColorButton" class = "button">
-				set node color
-			</div>
-			<div id="textOptions">
-				<div id = "italicsButton" class = "button">
-					italicize
-				</div>
-				<div id = "boldButton" class = "button">
-					bold
-				</div>
-				<div id = "underlineButton" class = "button">
-					Underline
-				</div>
-			</div>
-		</div>
 		
-		<div id = "canvasContainer">
-			<div id = "canvas">
+			<div id = "outputWindow">
+				<div id = "outputCanvas">
+				</div>
+			</div>
 			
+			<ul id = "inputField">
+			
+			</ul>
+		
+			<div id = 'colorPanel'>
+					<input type='text' id = 'colorCodeInput' value='#000000'>
+					<div id = 'red' class = 'textLabel'>
+						Red
+					</div>
+				<input type='range' id = 'redSlider' class='slider' min='0' max='255' value='0'>
+					<div id = 'green' class = 'textLabel'>
+						Green
+					</div>
+				<input type='range' id = 'greenSlider' class='slider' min='0' max='255' value='0'>
+					<div id = 'blue' class = 'textLabel'>
+						Blue
+					</div>
+				<input type='range' id = 'blueSlider' class='slider' min='0' max='255' value='0'>
 			</div>
 		</div>
-		
-		<ul id = "bulletPtContainer">
-			<li class = "bulletPtSection">
-				<div class="bulletPtText" contenteditable = true>
-				</div>
-			</li>
-		</ul>
-		
-		<div id = 'colorAdjustPanel'>
-			<input type='text' id = 'colorCodeInput' value='#000000'></p>
-			<div id = 'colorDisplay'></div>
-			<p id = 'red'>Red</p>
-			<input type='range' id = 'redSlider' class='slider' min='0' max='255' value='0'>
-			<p id = 'green'>Green</p>
-			<input type='range' id = 'blueSlider' class='slider' min='0' max='255' value='0'>
-			<p id = 'blue'>Blue</p>
-			<input type='range' id = 'greenSlider' class='slider' min='0' max='255' value='0'>
-			<div id='colorButton' class='button'>Set color</div>
-		</div>
-		
 		<!-- script file -->
-        <script type="module" src="./js/main.js"></script>
+        <script type="module" src="./js/index.js"></script>
 	</body>
 </html>
