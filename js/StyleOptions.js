@@ -2,6 +2,7 @@
 
 import{Main} from './Main.js';
 import{Color} from './Color.js';
+import{Drag} from './Drag.js';
 
 class StyleOptions{
 	constructor(){
@@ -46,11 +47,19 @@ class StyleOptions{
 		greenSlider.addEventListener('input', StyleOptions.setGreen)
 		blueSlider.addEventListener('input', StyleOptions.setBlue)
 		colorCodeInput.addEventListener('change', StyleOptions.setColorCode);
+		
+		window.addEventListener('deselection', StyleOptions.deactivateDrag);
+		
+		StyleOptions.dragButton = new Drag(document.querySelector('#dragButton'));
+		document.querySelector('#dragButton').addEventListener('click', StyleOptions.activateDrag);
+		StyleOptions.autoformatButton = new Drag(document.querySelector('#autoformatButton'));
+		document.querySelector('#autoformatButton').addEventListener('click', StyleOptions.revertAutoformat);
 	}
 	
 	static updateOptions(){
 		//update the interface elements to display style properties of currently selected node.
 		const currentNode = Main.getTree().getCurrentNode();
+		StyleOptions.updateDragButtons();
 		if(currentNode === null){
 			//In the case that the selectedNode is null, certain inputs should be disabled
 			// and have their values set to null.
@@ -264,6 +273,83 @@ class StyleOptions{
 		}else{
 			colorCodeInput.value = StyleOptions.color.getColorCode();
 		}
+	}
+	
+	static updateDragButtons(){
+		const currentNode = Main.getTree().getCurrentNode();
+		if (currentNode != null){
+			StyleOptions.dragButton.setPageProperty('visibility', 'visible');
+			const dragX = currentNode.getXCoord() + currentNode.getWidth() + 3;
+			const dragY = currentNode.getYCoord();
+			StyleOptions.dragButton.setCoord(dragX, dragY);
+			StyleOptions.autoformatButton.setCoord(dragX, dragY + 33);
+			if(currentNode.getAutoformat() === false){
+				StyleOptions.autoformatButton.setPageProperty('visibility', 'visible');
+			}
+		}else{
+			StyleOptions.dragButton.setPageProperty('visibility', 'hidden');
+			StyleOptions.autoformatButton.setPageProperty('visibility', 'hidden');
+		}
+	}
+	
+	static activateDrag(){
+		const currentNode = Main.getTree().getCurrentNode();
+		if(StyleOptions.dragButton.getPageElement().classList.contains('selected')){
+			StyleOptions.deactivateDrag();
+		}else{
+			if(currentNode.getAutoformat() === true){
+				currentNode.setAutoformat(false);
+				StyleOptions.autoformatButton.setPageProperty('visibility', 'visible');
+			}				
+			StyleOptions.dragButton.getPageElement().classList.add('selected');
+			currentNode.getGraphNode().setPageProperty('cursor', 'move');
+			currentNode.getGraphNode().getGraphElement().addEventListener('mousedown', StyleOptions.dragStart);
+			currentNode.getGraphNode().getGraphElement().addEventListener('mouseup', StyleOptions.dragEnd);
+			currentNode.getGraphNode().getGraphElement().addEventListener('mouseout', StyleOptions.dragEnd);
+		}
+	}
+	
+	static deactivateDrag(){
+		const currentNode = Main.getTree().getCurrentNode();
+		StyleOptions.dragButton.getPageElement().classList.remove('selected');
+		currentNode.getGraphNode().setPageProperty('cursor', 'auto');
+		currentNode.getGraphNode().getGraphElement().removeEventListener('mousedown', StyleOptions.dragStart);
+		currentNode.getGraphNode().getGraphElement().removeEventListener('mouseup', StyleOptions.dragEnd);
+		currentNode.getGraphNode().getGraphElement().removeEventListener('mouseout', StyleOptions.dragEnd);
+	}
+	
+	static dragStart(e){
+		const outputWindow = document.querySelector('#outputWindow');
+		outputWindow.addEventListener('mousemove', StyleOptions.moveCurrentNode);
+		StyleOptions.dragButton.setXCoord(e.clientX);
+		StyleOptions.dragButton.setYCoord(e.clientY);
+		window.dispatchEvent(Main.getFileChangedEvent());
+	}
+	
+	static dragEnd(){
+		const outputWindow = document.querySelector('#outputWindow');
+		outputWindow.removeEventListener('mousemove', StyleOptions.moveCurrentNode);
+	}
+	
+	static moveCurrentNode(e){
+		const currentNode = Main.getTree().getCurrentNode();
+		const deltaX = e.clientX - StyleOptions.dragButton.getXCoord();
+		const deltaY = e.clientY - StyleOptions.dragButton.getYCoord();
+		currentNode.setCoord(currentNode.getXCoord() + deltaX, currentNode.getYCoord() + deltaY);
+		if(currentNode.getParentNode().getIsRoot() === false){
+			currentNode.getParentNode().transformLines();
+		}
+		StyleOptions.dragButton.setXCoord(e.clientX);
+		StyleOptions.dragButton.setYCoord(e.clientY);
+		StyleOptions.updateDragButtons();
+	}
+	
+	static revertAutoformat(){
+		StyleOptions.autoformatButton.setPageProperty('visibility', 'hidden');
+		const currentNode = Main.getTree().getCurrentNode();
+		StyleOptions.deactivateDrag();
+		currentNode.setAutoformat(true);
+		window.dispatchEvent(Main.getGraphChangedEvent());
 	}
 }
 

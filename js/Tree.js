@@ -2,7 +2,6 @@
 
 import {TreeNode} from './TreeNode.js';
 import{Utils} from './Utils.js';
-import{Main} from './Main.js';
 
 class Tree{
 	constructor(){
@@ -97,6 +96,18 @@ class Tree{
 				}
 			}
 			return(treeString);
+		}
+	}
+	
+	remove(list){
+		if (list === undefined){
+			list = this.rootNode.getChildren();
+		}
+		for (let i = 0; i<list.length; i++){
+			if(list[i].getChildren().length != 0){
+				this.remove(list[i].getChildren());
+			}
+			list[i].remove();
 		}
 	}
 }

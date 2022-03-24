@@ -1,4 +1,5 @@
 import{Main} from './Main.js';
+import{StyleOptions} from './StyleOptions.js';
 
 class OutputWindow{
 	constructor(){
@@ -8,7 +9,8 @@ class OutputWindow{
 			//Initiate the recursive algorithm of autoformatGraph by calling it on the children array
 			//or the root node. get the marginX and marginY constants from main.
 			OutputWindow.autoformatGraph(Main.getTree().getRootNode().getChildren(), 0, 0,
-			Main.getMarginX(), Main.getMarginY())
+			Main.getMarginX(), Main.getMarginY());
+			StyleOptions.updateDragButtons();
 		});
 	}
 	
@@ -29,7 +31,9 @@ class OutputWindow{
 			currentY += marginY;
 			if (nodeList[i].getChildren().length === 0){
 				//If the node at index i has no children, simply position it at(currentX,currentY).
-				nodeList[i].setCoord(currentX, currentY);
+				if(nodeList[i].getAutoformat() === true){
+					nodeList[i].setCoord(currentX, currentY);
+				}
 				// Increment currentY by the height of the node.
 				currentY += nodeList[i].getHeight();
 			}else{
@@ -40,7 +44,9 @@ class OutputWindow{
 				if(childTotalHeight > nodeList[i].getHeight()){
 					//If the total height of the node's children exceeds the height of the node,
 					//position the node such that its center aligns with the center of its children.
-					nodeList[i].setCoord(currentX, currentY + (childTotalHeight - nodeList[i].getHeight())/2);
+					if(nodeList[i].getAutoformat() === true){
+						nodeList[i].setCoord(currentX, currentY + (childTotalHeight - nodeList[i].getHeight())/2);
+					}
 					//increment currentY by childTotalHeight
 					currentY += childTotalHeight;
 				}else{
@@ -48,13 +54,11 @@ class OutputWindow{
 					//format its children such that the middle of their layer aligns with the center of the node.
 					OutputWindow.autoformatGraph(nodeList[i].getChildren(), currentX + nodeList[i].getWidth(),
 						currentY - marginY + (nodeList[i].getHeight() - childTotalHeight)/2, marginX, marginY);
-					nodeList[i].setCoord(currentX, currentY);
+					if(nodeList[i].getAutoformat() === true){
+						nodeList[i].setCoord(currentX, currentY);
+					}
 					//increment currentY by the height of the node
 					currentY += nodeList[i].getHeight();
-				}
-				//iterate through the lineList of the node and adjust the position of each line.
-				for(let j = 0; j<nodeList[i].getLineList().length; j++){
-					nodeList[i].getLineList()[j].transformLine();
 				}
 			}
 		}

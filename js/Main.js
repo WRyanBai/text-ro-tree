@@ -17,6 +17,8 @@ class Main{
 		Main.tree.getRootNode().appendChildNode(new TreeNode());
 		Main.graphChangedEvent =  new Event('graphChanged');
 		Main.selectedChangedEvent = new Event('selectedChanged');
+		Main.deselectionEvent = new Event('deselection');
+		Main.fileChangedEvent = new Event('fileChanged');
 		Main.marginX = 50;
 		Main.marginY = 25;
 	}
@@ -48,6 +50,22 @@ class Main{
 	
 	static setSelectedChangedEvent(newEvent){
 		this.selectedChangedEvent = newEvent;
+	}
+	
+	static getDeselectionEvent(){
+		return(this.deselectionEvent);
+	}
+	
+	static setDeselectionEvent(newEvent){
+		this.deselectionEvent = newEvent;
+	}
+	
+	static getFileChangedEvent(){
+		return(this.fileChangedEvent);
+	}
+	
+	static setFileChangedEvent(newEvent){
+		this.fileChangedEvent = newEvent;
 	}
 	
 	static getMarginX(){

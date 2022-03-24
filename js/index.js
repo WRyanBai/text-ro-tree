@@ -18,11 +18,11 @@ import {Tree} from './Tree.js'; */
 
 //The init function intializes the program by creating instances of the classes
 function init(){
-	const main = new Main();
-	const inputField = new InputField();
-	const outputWindow = new OutputWindow();
-	const styleOptions = new StyleOptions();
-	const fileOptions = new FileOptions();
+	new Main();
+	new InputField();
+	new OutputWindow();
+	new StyleOptions();
+	new FileOptions();
 	
 	window.dispatchEvent(Main.getGraphChangedEvent());
 	window.dispatchEvent(Main.getSelectedChangedEvent());

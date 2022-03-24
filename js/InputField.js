@@ -63,6 +63,7 @@ class InputField {
 	}
 	
 	static deselectNode(targetNode){
+		window.dispatchEvent(Main.getDeselectionEvent());
 		//This method deselects the targetNode.
 		Main.getTree().setCurrentNode(null);
 		//Dispatch an event indicating the selected node has changed.
@@ -108,6 +109,7 @@ class InputField {
 				InputField.unindentCurrentNode();
 			}
 		}
+		window.dispatchEvent(Main.getFileChangedEvent());
 	}
 	
 	static createNode(){
@@ -125,11 +127,11 @@ class InputField {
 		//insert newNode after the tree's currentNode.
 		InputField.insertAfter(newNode, Main.getTree().getCurrentNode());
 		
-		//Let the newly created node be selected.
-		InputField.selectNode(newNode);
-		
 		//Dispatch the graphChanged event to reformat the graph.
 		window.dispatchEvent(Main.getGraphChangedEvent());
+		
+		//Let the newly created node be selected.
+		InputField.selectNode(newNode);
 	}
 	
 	static indentCurrentNode(){
@@ -151,6 +153,8 @@ class InputField {
 			
 			//Dispatch the graphChanged event to reformat the graph.
 			window.dispatchEvent(Main.getGraphChangedEvent());
+		}else if(currentNode.getBulletPoint().getMargin() > 220){
+			window.alert('Cannot indent any further.')
 		}
 	}
 	
@@ -200,11 +204,12 @@ class InputField {
 		//Remove currentNode's html elements.
 		currentNode.remove();
 		Main.getTree().setCurrentNode(null);
-		//Dispatch an event indicating the selected node has changed.
-		window.dispatchEvent(Main.getSelectedChangedEvent());
 		
 		//Dispatch the graphChanged event to reformat the graph.
 		window.dispatchEvent(Main.getGraphChangedEvent());
+		
+		//Dispatch an event indicating the selected node has changed.
+		window.dispatchEvent(Main.getSelectedChangedEvent());
 	}
 	
 	static transferChildren(fromNode, toNode, startIndex, toIndex){
