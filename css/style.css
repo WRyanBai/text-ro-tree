@@ -370,6 +370,13 @@ input{
 	visibility:hidden;
 }
 
+#outputWindow .button .icon{
+	margin-left:10%;
+	margin-top:10%;
+	width:80%;
+	height:auto;
+}
+
 #outputWindow .button:hover{
 	background:#6d8683;
 }
