@@ -403,7 +403,7 @@ input{
 
 .graphNode{
 	height: 50px;
-	width: 150px;
+	width: 100px;
 	background: #f4f4f4;
 	position: absolute;
 	z-index: 3;
