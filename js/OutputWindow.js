@@ -25,7 +25,6 @@ class OutputWindow{
 		currentX += marginX;
 		//initialize the childTotalHeight variable
 		let childTotalHeight;
-		
 		for (let i = 0; i < nodeList.length; i++){ //iterate through each TreeNode in nodeList.
 			//In each iteration, increase currentY by marginY.
 			currentY += marginY;
@@ -33,6 +32,8 @@ class OutputWindow{
 				//If the node at index i has no children, simply position it at(currentX,currentY).
 				if(nodeList[i].getAutoformat() === true){
 					nodeList[i].setCoord(currentX, currentY);
+				}else{
+					nodeList[i].transformLines();
 				}
 				// Increment currentY by the height of the node.
 				currentY += nodeList[i].getHeight();
@@ -46,6 +47,8 @@ class OutputWindow{
 					//position the node such that its center aligns with the center of its children.
 					if(nodeList[i].getAutoformat() === true){
 						nodeList[i].setCoord(currentX, currentY + (childTotalHeight - nodeList[i].getHeight())/2);
+					}else{
+						nodeList[i].transformLines();
 					}
 					//increment currentY by childTotalHeight
 					currentY += childTotalHeight;
@@ -56,6 +59,8 @@ class OutputWindow{
 						currentY - marginY + (nodeList[i].getHeight() - childTotalHeight)/2, marginX, marginY);
 					if(nodeList[i].getAutoformat() === true){
 						nodeList[i].setCoord(currentX, currentY);
+					}else{
+						nodeList[i].transformLines();
 					}
 					//increment currentY by the height of the node
 					currentY += nodeList[i].getHeight();
