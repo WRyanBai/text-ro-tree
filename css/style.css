@@ -43,8 +43,6 @@ body{
 }
 
 #outputCanvas{
-	height:100%;
-	wdith:100%;
 	position: relative;
 	backGround:white;
 	z-index:1;
