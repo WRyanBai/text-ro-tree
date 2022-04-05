@@ -183,6 +183,7 @@ class StyleOptions{
 			redSlider.value = StyleOptions.color.getRed();
 			greenSlider.value = StyleOptions.color.getGreen();
 			blueSlider.value = StyleOptions.color.getBlue();
+			colorCodeInput.value = StyleOptions.color.getColorCode();
 			
 		}else if(currentNode != null && visibility === 'visible'){
 			//If the panel is visible, make it hidden.
@@ -276,79 +277,107 @@ class StyleOptions{
 	}
 	
 	static updateDragButtons(){
+		//This method updates the position of the dragButton and autoformatButton so that they appear next to the selected node.
 		const currentNode = Main.getTree().getCurrentNode();
 		if (currentNode != null){
+			//If a currentNode is selected, make dragButton and autoformatButton visible and move them next to the node.
 			StyleOptions.dragButton.setPageProperty('visibility', 'visible');
 			const dragX = currentNode.getXCoord() + currentNode.getWidth() + 3;
 			const dragY = currentNode.getYCoord();
 			StyleOptions.dragButton.setCoord(dragX, dragY);
 			StyleOptions.autoformatButton.setCoord(dragX, dragY + 33);
 			if(currentNode.getAutoformat() === false){
+				//Only show the autoformatButton if the autoformat boolean of the node is false
 				StyleOptions.autoformatButton.setPageProperty('visibility', 'visible');
 			}
 		}else{
+			//If no currentNode is selected, make the buttons hidden
 			StyleOptions.dragButton.setPageProperty('visibility', 'hidden');
 			StyleOptions.autoformatButton.setPageProperty('visibility', 'hidden');
 		}
 	}
 	
 	static activateDrag(){
+		//This method activates drag-move on the currentNode whent eh dragButton is clicked
 		const currentNode = Main.getTree().getCurrentNode();
 		if(StyleOptions.dragButton.getPageElement().classList.contains('selected')){
+			//If the dragButton is clicked but it is already selected, deactivateDrag instead.
 			StyleOptions.deactivateDrag();
 		}else{
 			if(currentNode.getAutoformat() === true){
+				//If autoformat is true for currentNode, set it to false and make the autoformatButton visible.
 				currentNode.setAutoformat(false);
 				StyleOptions.autoformatButton.setPageProperty('visibility', 'visible');
 			}				
+			//Add selected style class to dragButton
 			StyleOptions.dragButton.getPageElement().classList.add('selected');
+			//Activate dragging for currentNode.
 			currentNode.getGraphNode().setPageProperty('cursor', 'move');
 			currentNode.getGraphNode().getGraphElement().addEventListener('mousedown', StyleOptions.dragStart);
 			currentNode.getGraphNode().getGraphElement().addEventListener('mouseup', StyleOptions.dragEnd);
-			currentNode.getGraphNode().getGraphElement().addEventListener('mouseout', StyleOptions.dragEnd);
 		}
 	}
 	
 	static deactivateDrag(){
 		const currentNode = Main.getTree().getCurrentNode();
+		//Remove seelcted style class from dragButton.
 		StyleOptions.dragButton.getPageElement().classList.remove('selected');
+		//deactivate drag-move
 		currentNode.getGraphNode().setPageProperty('cursor', 'auto');
 		currentNode.getGraphNode().getGraphElement().removeEventListener('mousedown', StyleOptions.dragStart);
 		currentNode.getGraphNode().getGraphElement().removeEventListener('mouseup', StyleOptions.dragEnd);
-		currentNode.getGraphNode().getGraphElement().removeEventListener('mouseout', StyleOptions.dragEnd);
 	}
 	
 	static dragStart(e){
+		//After a mouseDown event on the currentNode, this method begins a drag-move sequence.
 		const outputWindow = document.querySelector('#outputWindow');
+		//Listen for a mouseMove event in the outputWindow.
 		outputWindow.addEventListener('mousemove', StyleOptions.moveCurrentNode);
+		//Store the current coordinates of the mouse.
 		StyleOptions.dragButton.setXCoord(e.clientX);
 		StyleOptions.dragButton.setYCoord(e.clientY);
+		//Dispatch an event to indicate that unsaved changes are made to the file.
 		window.dispatchEvent(Main.getFileChangedEvent());
 	}
 	
 	static dragEnd(){
+		//After a mouseup event on the currentNode, this method ends a drag-move sequence.
 		const outputWindow = document.querySelector('#outputWindow');
 		outputWindow.removeEventListener('mousemove', StyleOptions.moveCurrentNode);
 	}
 	
 	static moveCurrentNode(e){
+		//When the mouse moves in the output window during a drag-move sequence, update coordinates of currentNode.
 		const currentNode = Main.getTree().getCurrentNode();
+		//Get the amount by which the mouse has moved.
 		const deltaX = e.clientX - StyleOptions.dragButton.getXCoord();
 		const deltaY = e.clientY - StyleOptions.dragButton.getYCoord();
+		//Let the currentNode change coordinates by the same amount.
 		currentNode.setCoord(currentNode.getXCoord() + deltaX, currentNode.getYCoord() + deltaY);
+		//Formnat lines connecting from the parent to this node.
 		if(currentNode.getParentNode().getIsRoot() === false){
 			currentNode.getParentNode().transformLines();
 		}
+		//Store current coordinates
 		StyleOptions.dragButton.setXCoord(e.clientX);
 		StyleOptions.dragButton.setYCoord(e.clientY);
+		//Update coordinates of dragButton and autoformatButton
 		StyleOptions.updateDragButtons();
 	}
 	
 	static revertAutoformat(){
+		//clicking on the autoformatButton next to a node that has been drag-moved
+		//will restore its autoformat to true and position it back where the autoformat
+		//algorithm will put it.
+		
+		//hide the autoformatButton again
 		StyleOptions.autoformatButton.setPageProperty('visibility', 'hidden');
 		const currentNode = Main.getTree().getCurrentNode();
+		//deactivate dragging.
 		StyleOptions.deactivateDrag();
+		//set autoformat to true
 		currentNode.setAutoformat(true);
+		//position the node according to autoformat algorithm.
 		window.dispatchEvent(Main.getGraphChangedEvent());
 	}
 }

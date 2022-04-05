@@ -26,10 +26,12 @@ class TreeNode{
 			//parentNode points to its parent node in the data tree
 			this.parentNode = null;
 			
+			//The autoformat boolean determines whether the position of this node is automatically
+			//updated witht he rest of the diagram.
 			this.autoformat = true;
 		}
 		
-		//An array of children. Root nodes and regular TreeNodes all have this field.
+		//An array of children.
 		this.children = [];
 	}
 	
@@ -150,7 +152,7 @@ class TreeNode{
 		//set the parentNode to newParent
 		this.parentNode = newParent;
 		if(newParent.getIsRoot() === false){
-			//Set the margin of the bulletPoint to be indented one time more than parentNode.
+			//Set the bulletPoint to be indented one time more than parentNode.
 			this.bulletPoint.setMargin(newParent.getBulletPoint().getMargin());
 			this.bulletPoint.addMargin();
 		}else{
@@ -191,8 +193,7 @@ class TreeNode{
 		this.lineList = newlist;
 	}
 	
-	//To increase encapsulation, methods to read and write the properties of BulletPoint and GraphNode
-	//Are called from TreeNode.
+	//Methods to read and write the properties of BulletPoint and GraphNode can be called from TreeNode.
 	highlight(){
 		this.bulletPoint.highlight();
 		this.graphNode.highlight();

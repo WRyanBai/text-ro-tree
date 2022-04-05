@@ -10,16 +10,10 @@ class GraphNode extends Selectable {
 		//call Selectable constructor
 		super();
 		
-		//Currently the only template for nodes in the tree diagram is a rectangle with rounded corners,
-		//whose stlye is specified through the rectangleNode css class. In the future, more templates
-		//may be added, thus the styleClass attribute is used to account for future extensions.
-		//More templates can be added in the future by allowing styleclass to be modified.
-		this.nodeStyle = 'rectangleNode';
-		
 		//Create an html element to represent the node in the tree diagram.
 		const graphElement = document.createElement('div');
 		graphElement.classList.add('graphElement');
-		graphElement.classList.add(this.nodeStyle);
+		graphElement.classList.add('graphNode');
 		//Add an html element to display text in graphElement.
 		const graphText = document.createElement('div');
 		graphText.classList.add('graphText');
@@ -36,16 +30,21 @@ class GraphNode extends Selectable {
 		super.setTextElement(this.graphText);
 	}
 	
-	//accessor and mutator methods
-	getNodeStyle(){
-		return this.nodeStyle;
+	setWidth(newWidth){
+		//This method overrides the setWidth method of Selectable.
+		//A graphChanged event is dispatched.
+		super.setWidth(newWidth);
+		window.dispatchEvent(Main.getGraphChangedEvent());
 	}
 	
-	setNodeStyle(newNodeStyle){
-		//This function is not yet fully implemented since only one nodeStyle is currently available
-		//it is present here to improve extensibility for more potential style templates.
-		this.nodeStyle = newNodeStyle;
+	setHeight(newHeight){
+		//This method overrides the setHeight method of Selectable.
+		//A graphChanged event is dispatched.
+		super.setHeight(newHeight);
+		window.dispatchEvent(Main.getGraphChangedEvent());
 	}
+	
+	//accessor and mutator methods
 	
 	getGraphElement(){
 		return(this.graphElement);
@@ -63,30 +62,6 @@ class GraphNode extends Selectable {
 	setGraphText(newGraphText){
 		this.graphText = newGraphText;
 		super.setTextElement(newGraphText);
-	}
-	
-	setWidth(newWidth){
-		//This method overrides the updateHeight method of Selectable.
-		//A graphCHanged event is dispatched.
-		super.setWidth(newWidth);
-		window.dispatchEvent(Main.getGraphChangedEvent());
-	}
-	
-	updateHeight(){
-		//This method overrides the updateHeight method of Selectable.
-		//THe functionality is the same, with the exception that the overided method
-		//Dispatches a graphChanged event, which allows the graph in the output window
-		//to be reformated once the height of a graphNode is changed.
-		
-		let newHeight = this.getTextHeight();
-		newHeight += 2 * this.getPadding();
-		if (newHeight != this.getHeight() && Math.abs(newHeight - this.getHeight()) > 1){
-			if(newHeight === 2 * this.getPadding()){
-				newHeight += Utils.removePx(this.getTextProperty('lineHeight'));
-			}
-			this.setHeight(newHeight);
-			window.dispatchEvent(Main.getGraphChangedEvent());
-			}
 	}
 }
 

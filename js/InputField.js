@@ -83,7 +83,6 @@ class InputField {
 		//enter, tab, and backspace keys.
 		//There is no need to get the target of the keypress event since only the currentNode
 		//can be typed into, so the target is always the currentNode of the tree.
-		
 		//Use the window.getSelection method to find the position of the caret in the text.
 		let sel = window.getSelection();
 		if (e.keyCode === 13){
@@ -96,19 +95,30 @@ class InputField {
 			e.preventDefault();
 			InputField.indentCurrentNode();
 		}
-		else if (e.keyCode === 8 && sel.anchorOffset === 0){
+		else if (e.keyCode === 46 &&
+			!(Main.getTree().getCurrentNode().getParentNode().getIsRoot() === true &&
+			Main.getTree().getRootNode().getChildren().length === 1 &&
+			Main.getTree().getCurrentNode().getChildren().length === 0)){
+			//If the delete key is pressed and the current node is node the only node
+			InputField.removeCurrentNode();
+		}
+		else if ( e.keyCode === 8 && sel.anchorOffset === 0){
 			//If backspace is pressed and the caret is at the start of the textcontent,
-			//The bullet point will be unindented or deleted.
-			if(Main.getTree().getCurrentNode().getParentNode().getIsRoot() === true &&
-				Main.getTree().getRootNode().getChildren().length != 1){
-				//If the currentNode has rootNode as its parent and is not the only node, remove it.
-				InputField.removeCurrentNode();
+			//The bullet point will be unindented.
+			if(Main.getTree().getCurrentNode().getParentNode().getIsRoot() === true){
+				if(!(Main.getTree().getRootNode().getChildren().length === 1 &&
+				//If the currentNode cannot be indented any further (has rootNode as its parent)
+				//and is not the only node, remove it.
+				Main.getTree().getCurrentNode().getChildren().length === 0)){
+					InputField.removeCurrentNode();
+				}
 			}
 			else{
 				//Otherwise simply unindent the current node.
 				InputField.unindentCurrentNode();
 			}
 		}
+		//Dispatch an event to show that unsaved changes are made in the file
 		window.dispatchEvent(Main.getFileChangedEvent());
 	}
 	

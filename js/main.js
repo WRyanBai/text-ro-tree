@@ -1,18 +1,11 @@
-//The Main class contains data for the FileOptions, TextOptions, NodeOptions, InputField and OutputWindow
-//classes to access.
+//The Main class contains data to be accessed by controller classes.
 
 import{Tree} from './Tree.js';
 import{TreeNode} from './TreeNode.js';
 
-//The Main class is associated with the following classes that handle user interactions
-//import{FileOptions} from './FileOptions.js';
-
-//The Main class is responsible for intitializing the program, it does so by instantiating
-//classes that handles various parts of the interface. The data field of Main contains
-//constants and objects that are accessed by multiple classes.
 class Main{
 	constructor() {
-		//The data tree
+		//Setting value for constants and objects
 		Main.tree = new Tree();
 		Main.tree.getRootNode().appendChildNode(new TreeNode());
 		Main.graphChangedEvent =  new Event('graphChanged');
@@ -21,12 +14,13 @@ class Main{
 		Main.fileChangedEvent = new Event('fileChanged');
 		Main.marginX = 50;
 		Main.marginY = 25;
+		
+		//Setting default attributes for elements
+		const iconArray = document.querySelectorAll('.icon');
+		for(let i = 0; i < iconArray.length; i++){
+			iconArray[i].draggable = false;//Set draggable of all icons to false
+		};
 	}
-	
-	static tree;
-	static graphChangedEvent;
-	static marginX;
-	static marginY;
 	
 	static getTree(){
 		return(this.tree)
@@ -40,32 +34,16 @@ class Main{
 		return(this.graphChangedEvent);
 	}
 	
-	static setGraphChangedEvent(newEvent){
-		this.graphChangedEvent = newEvent;
-	}
-	
 	static getSelectedChangedEvent(){
 		return(this.selectedChangedEvent);
-	}
-	
-	static setSelectedChangedEvent(newEvent){
-		this.selectedChangedEvent = newEvent;
 	}
 	
 	static getDeselectionEvent(){
 		return(this.deselectionEvent);
 	}
 	
-	static setDeselectionEvent(newEvent){
-		this.deselectionEvent = newEvent;
-	}
-	
 	static getFileChangedEvent(){
 		return(this.fileChangedEvent);
-	}
-	
-	static setFileChangedEvent(newEvent){
-		this.fileChangedEvent = newEvent;
 	}
 	
 	static getMarginX(){

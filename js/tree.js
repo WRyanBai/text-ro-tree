@@ -22,8 +22,6 @@ class Tree{
 	
 	setCurrentNode(newCurrentNode){
 		this.currentNode = newCurrentNode;
-		//Dispatch an event to signal that the selected node has changed, so that the interface can
-		//respond correspondingly.
 	}
 	
 	searchNode(searchElement, searchCurrent){
@@ -100,6 +98,7 @@ class Tree{
 	}
 	
 	remove(list){
+		//This method uses recursion to remove all html elements related to a tree.
 		if (list === undefined){
 			list = this.rootNode.getChildren();
 		}
