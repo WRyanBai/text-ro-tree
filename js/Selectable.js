@@ -9,55 +9,10 @@ class Selectable{
 		this.pageElement = pageElement;
 		//The textElement field is a htmlElement that displays any text associated with the Selectable
 		this.textElement = textElement;
-		
-	}
-	
-	//accessor and mutator methods
-	getPageElement(){
-		return this.pageElement;
-	}
-	
-	setPageElement(newPageElement){
-		this.pageElement = newPageElement;
-		this.pageElement.classList.add('defaultBorder');
-	}
-	
-	getTextElement(){
-		return this.textElement;
-	}
-	
-	setTextElement(newTextElement){
-		this.textElement = newTextElement;
-	}
-	
-	getHighlightBorder(){
-		return this.highlightBorder;
-	}
-	
-	setHighlightBorder(newHighlightBorder){
-		this.highlightBorder = newHighlightBorder;
-	}
-	
-	getDefaultBorder(){
-		return this.defaultBorder;
-	}
-	
-	setDefaultBorder(newDefaultBorder){
-		this.defaultBorder = newDefaultBorder;
 	}
 	
 	//methods to change the style and display of the Selectable
-	getText(){
-		//returns the textContent of textElement
-		return(this.textElement.textContent);
-	}
-	
-	setText(newText){
-		//changes the textContent of textElement
-		this.textElement.textContent = newText;
-		this.updateHeight();
-	}
-	
+
 	getTextProperty(propertyName){
 		//returns a specified css property of textElement
 		const style = window.getComputedStyle(this.textElement);
@@ -80,11 +35,12 @@ class Selectable{
 		this.pageElement.style[propertyName] = propertyValue;
 	}
 	
-	highlight(selectableNode){
+	highlight(){
 		//This method gives pageElement a border to emphasize that the Selectable has been selected
 		//This is done by replacing defaultBorder with the highlightBorder in the css class of the element
 		this.pageElement.classList.remove('defaultBorder');
 		this.pageElement.classList.add('highlightBorder');
+		this.updateHeight();
 	}
 	
 	unhighlight(){
@@ -92,21 +48,16 @@ class Selectable{
 		//This is done by replacing highlightBorder with the defaultBorder in the css class of the element
 		this.pageElement.classList.remove('highlightBorder');
 		this.pageElement.classList.add('defaultBorder');
+		this.updateHeight();
 	}
 	
 	remove(){
-		//remove the Selectable from the webpage
+		//remove the html elements associated with the Selectable object
 		this.pageElement.remove();
 		this.textElement.remove();
 	}
 	
-	//Aside from get and set property, there are also methods to get frequently used style properties.
-	setCoord(xCoord, yCoord){
-		//This method sets the corrdinates of pageElement by changing the left and top properties.
-		this.setPageProperty('left', xCoord.toString() + 'px');
-		this.setPageProperty('top', yCoord.toString() + 'px');
-	}
-	
+	//Aside from get and set property, there are also methods to get and set frequently used style properties.
 	getXCoord(){
 		let xCoord = Utils.removePx(this.getPageProperty('left'));
 		return(xCoord);
@@ -116,6 +67,12 @@ class Selectable{
 		let yCoord = Utils.removePx(this.getPageProperty('top'));
 		return(yCoord);
 	}
+
+	setCoord(xCoord, yCoord){
+		//This method sets the corrdinates of pageElement by changing the left and top properties.
+		this.setPageProperty('left', xCoord.toString() + 'px');
+		this.setPageProperty('top', yCoord.toString() + 'px');
+	}
 	
 	getWidth(){
 		let width = Utils.removePx(this.getPageProperty('width'))
@@ -124,6 +81,7 @@ class Selectable{
 	
 	setWidth(newWidth){
 		this.setPageProperty('width', newWidth.toString() + 'px');
+		this.updateHeight();
 	}
 	
 	getHeight(){
@@ -182,6 +140,17 @@ class Selectable{
 		this.setTextProperty('color',newColorCode);
 	}
 	
+	getText(){
+		//returns the textContent of textElement
+		return(this.textElement.textContent);
+	}
+	
+	setText(newText){
+		//changes the textContent of textElement
+		this.textElement.textContent = newText;
+		this.updateHeight();
+	}
+	
 	getFontSize(){
 		let fontSize = Utils.removePx(this.getTextProperty('fontSize'));
 		return(fontSize);
@@ -197,13 +166,10 @@ class Selectable{
 		//If so, the height of pageElement will be adjusted as well.
 		let newHeight = this.getTextHeight();
 		newHeight += 2 * this.getPadding();
-		//Add twice the value of padding to the text height to determine what the new height
-		//of pageElement should be.
+		//Check what the new height of the element should be.
 		
 		if (newHeight != this.getHeight() && Math.abs(newHeight - this.getHeight()) > 1){
-			//This conditional handles the case where newHeight is not the same as current height.
-			//Setting height using javascript can lead to a 1px offest, so the difference in newHeight
-			//and current height must be larger than 1.
+			//If new height is not same as current height, set current height to newheight
 			if(newHeight === 2 * this.getPadding()){
 				//This adds an extra line of height to pageText in the case that its text is empty
 				newHeight += Utils.removePx(this.getTextProperty('lineHeight'));
@@ -258,6 +224,24 @@ class Selectable{
 	
 	undoUnderline(){
 		this.setTextProperty('textDecorationLine', 'none');
+	}
+	
+	//accessor and mutator methods
+	getPageElement(){
+		return this.pageElement;
+	}
+	
+	setPageElement(newPageElement){
+		this.pageElement = newPageElement;
+		this.pageElement.classList.add('defaultBorder');
+	}
+	
+	getTextElement(){
+		return this.textElement;
+	}
+	
+	setTextElement(newTextElement){
+		this.textElement = newTextElement;
 	}
 }
 

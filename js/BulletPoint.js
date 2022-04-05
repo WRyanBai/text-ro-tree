@@ -16,7 +16,7 @@ class BulletPoint extends Selectable{
 		const bulletPtText = document.createElement('div');
 		bulletPtText.classList.add('bulletPtText');
 		bulletPtElement.appendChild(bulletPtText);
-		//APpend the element to the input field.
+		//Append the element to the input field.
 		const inputField = document.querySelector('#inputField');
 		inputField.appendChild(bulletPtElement);
 		//Add bulletPtElement and bulletPtText to the field of GraphNode
@@ -26,6 +26,21 @@ class BulletPoint extends Selectable{
 		//set bulletPtElement and bulletPtText to be the pageElement and textElement of Selectable
 		super.setPageElement(this.bulletPtElement);
 		super.setTextElement(this.bulletPtText);
+	}
+	
+	//Overrides the inherited highlight and unhighlight methods
+	highlight(){
+		super.highlight();
+		//Allow users to type
+		this.bulletPtText.contentEditable = true;
+		this.bulletPtText.focus();
+	}
+	
+	unhighlight(){
+		super.unhighlight();
+		//disable typing
+		this.bulletPtText.contentEditable = false;
+		this.bulletPtText.blur();
 	}
 	
 	addMargin(){
@@ -52,18 +67,6 @@ class BulletPoint extends Selectable{
 	setBulletPtText(newElement){
 		this.bulletPtText = newElement;
 		super.setTextElement(this.bulletPtText);
-	}
-	
-	highlight(){
-		super.highlight();
-		this.bulletPtText.contentEditable = true;
-		this.bulletPtText.focus();
-	}
-	
-	unhighlight(){
-		super.unhighlight();
-		this.bulletPtText.contentEditable = false;
-		this.bulletPtText.blur();
 	}
 }
 

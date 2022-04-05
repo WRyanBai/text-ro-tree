@@ -20,9 +20,6 @@ class GraphLine{
 		//Add lineElement to the field of GraphLine
 		this.lineElement = lineElement;
 		
-		//lineFormat is a string to denote how the line connects to the orgin and end nodes
-		this.lineFormat = 'rightToLeft';
-		
 		//Call transformLine function.
 		this.transformLine();
 	}
@@ -36,16 +33,12 @@ class GraphLine{
 		let endX;
 		let endY;
 		
-		if(this.lineFormat === 'rightToLeft'){
-			//In the right to left format, the line connects to origin at the center of its right edge
-			//and to end at the center of its left edge.
-			startX = this.origin.getXCoord() + this.origin.getWidth(); //x coordinate of right edge
-			startY = this.origin.getYCoord() + this.origin.getHeight()/2;//y coordinate of vertical center
-			endX = this.end.getXCoord();//x coordinate of left edge
-			endY = this.end.getYCoord() + this.end.getHeight()/2;//y coordinate of vertical center
-		}
+		startX = this.origin.getXCoord() + this.origin.getWidth(); //x coordinate of right edge
+		startY = this.origin.getYCoord() + this.origin.getHeight()/2;//y coordinate of vertical center
+		endX = this.end.getXCoord();//x coordinate of left edge
+		endY = this.end.getYCoord() + this.end.getHeight()/2;//y coordinate of vertical center
 		
-		//Use javascript's hypotenuse center to find distance between (startX, startY) and (endX, endY)
+		//Find distance between (startX, startY) and (endX, endY)
 		let lineLength = Math.hypot(endY - startY, endX - startX);
 		//Calculate the angle using arctangent
 		let lineAngle = (180/Math.PI) * Math.atan((endY - startY)/(endX - startX));
@@ -92,15 +85,6 @@ class GraphLine{
 	
 	setLineElement(newElement){
 		this.lineElement = newElement;
-	}
-	
-	getLineFormat(){
-		return(this.lineFormat);
-	}
-	
-	setLineFormat(newFormat){
-		this.lineFormat = newFormat;
-		this.transformLine();
 	}
 }
 
