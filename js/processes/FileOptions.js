@@ -1,11 +1,11 @@
 //The FileOptions class handles user interactions related to opening, saving, and exporting files
 
-import {Main} from './Main.js';
+import {Main} from '../helperClasses/Main.js';
 import {InputField} from './InputField.js';
 import {OutputWindow} from './OutputWindow.js';
-import {Tree} from './Tree.js';
-import {TreeNode} from './TreeNode.js';
-import {Utils} from './Utils.js';
+import {Tree} from '../dataStructure/Tree.js';
+import {TreeNode} from '../dataStructure/TreeNode.js';
+import {Utils} from '../helperClasses/Utils.js';
 
 class FileOptions{
 	constructor(){

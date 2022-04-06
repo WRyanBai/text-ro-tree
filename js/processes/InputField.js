@@ -1,8 +1,8 @@
 // The InputField class is responsible for handling inputs typed in the bullet point field
 
-import{Main} from './Main.js';
-import{Utils} from './Utils.js';
-import{TreeNode} from './TreeNode.js';
+import{Main} from '../helperClasses/Main.js';
+import{Utils} from '../helperClasses/Utils.js';
+import{TreeNode} from '../dataStructure/TreeNode.js';
 
 class InputField {
 	

@@ -1,9 +1,9 @@
 //The TreeNode class represents a node in the data tree with a parent and an array of children.
 
 //Each TreeNode has a GraphNode, a BulletPoint, and multiple GraphLine objects.
-import {BulletPoint} from './BulletPoint.js';
-import {GraphNode} from './GraphNode.js';
-import {GraphLine} from './GraphLine.js';
+import {BulletPoint} from '../dynamicInterface/BulletPoint.js';
+import {GraphNode} from '../dynamicInterface/GraphNode.js';
+import {GraphLine} from '../dynamicInterface/GraphLine.js';
 
 class TreeNode{
 	constructor(isRoot){

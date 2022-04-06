@@ -2,7 +2,7 @@
 
 import{Selectable} from './Selectable.js';
 //import the Utils class to use its utility methods.
-import{Utils} from './Utils.js';
+import{Utils} from '../helperClasses/Utils.js';
 
 class BulletPoint extends Selectable{
 	constructor(){

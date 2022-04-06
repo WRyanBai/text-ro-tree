@@ -1,4 +1,4 @@
-import{Main} from './Main.js';
+import{Main} from '../helperClasses/Main.js';
 import{StyleOptions} from './StyleOptions.js';
 
 class OutputWindow{

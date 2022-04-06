@@ -2,8 +2,8 @@
 
 import{Selectable} from './Selectable.js';
 //import the Utils class to use its utility methods.
-import{Utils} from './Utils.js';
-import{Main} from './Main.js';
+import{Utils} from '../helperClasses/Utils.js';
+import{Main} from '../helperClasses/Main.js';
 
 class GraphNode extends Selectable {
 	constructor(){

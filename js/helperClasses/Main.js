@@ -1,7 +1,7 @@
 //The Main class contains data to be accessed by controller classes.
 
-import{Tree} from './Tree.js';
-import{TreeNode} from './TreeNode.js';
+import{Tree} from '../dataStructure/Tree.js';
+import{TreeNode} from '../dataStructure/TreeNode.js';
 
 class Main{
 	constructor() {

@@ -1,10 +1,10 @@
 //This script is ran from index.html
 
-import {Main} from './Main.js';
-import {InputField} from './InputField.js';
-import {OutputWindow} from './OutputWindow.js';
-import {StyleOptions} from './StyleOptions.js';
-import {FileOptions} from './FileOptions.js';
+import {Main} from './helperClasses/Main.js';
+import {InputField} from './processes/InputField.js';
+import {OutputWindow} from './processes/OutputWindow.js';
+import {StyleOptions} from './processes/StyleOptions.js';
+import {FileOptions} from './processes/FileOptions.js';
 
 //The init function intializes the program by calling the constructor of controller classes.
 function init(){

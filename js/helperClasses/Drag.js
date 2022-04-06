@@ -1,4 +1,4 @@
-import{Selectable} from './Selectable.js';
+import{Selectable} from '../dynamicInterface/Selectable.js';
 
 class Drag extends Selectable{
 	constructor(pageElement){

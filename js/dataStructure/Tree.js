@@ -1,7 +1,7 @@
 //The Tree class represents a data tree composed of TreeNode objects.
 
 import {TreeNode} from './TreeNode.js';
-import{Utils} from './Utils.js';
+import{Utils} from '../helperClasses/Utils.js';
 
 class Tree{
 	constructor(){

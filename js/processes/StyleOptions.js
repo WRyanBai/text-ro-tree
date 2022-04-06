@@ -1,8 +1,8 @@
 //StyleOptions is responsible for handling user inputs that edits the style of a node.
 
-import{Main} from './Main.js';
-import{Color} from './Color.js';
-import{Drag} from './Drag.js';
+import{Main} from '../helperClasses/Main.js';
+import{Color} from '../helperClasses/Color.js';
+import{Drag} from '../helperClasses/Drag.js';
 
 class StyleOptions{
 	constructor(){
